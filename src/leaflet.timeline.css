@@ -1,0 +1,11 @@
+.leaflet-timeline-controls *{
+  vertical-align: middle;
+}
+
+.leaflet-timeline-controls{
+  width: 300px;
+}
+
+.leaflet-timeline-controls input[type=range]{
+  width: 200px;
+}
