@@ -1,0 +1,29 @@
+{
+  "name": "Leaflet.timeline",
+  "version": "0.1.0",
+  "description": "Show GeoJSON objects on a timeline",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "coffee -o dist/ -c src/leaflet.timeline-src.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skeate/Leaflet.timeline.git"
+  },
+  "keywords": [
+    "leaflet",
+    "timeline",
+    "playback",
+    "time",
+    "animate"
+  ],
+  "author": "Jonathan Skeate",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skeate/Leaflet.timeline/issues"
+  },
+  "homepage": "https://github.com/skeate/Leaflet.timeline",
+  "devDependencies": {
+    "coffee-script": "^1.8.0"
+  }
+}

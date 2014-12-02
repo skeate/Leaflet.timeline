@@ -2,7 +2,8 @@
   <head>
     <title>Leaflet.timeline</title>
     <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
-    <script src="../dist/leaflet.timeline-src.js"></script>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <script src="../dist/leaflet.timeline.js"></script>
     <script src="./morocco.js"></script>
 
     <link href="../bower_components/leaflet/dist/leaflet.css" rel="stylesheet">
@@ -27,10 +28,9 @@
 
       var timeline = L.timeline(data, {
         formatDate: function(date){
-          return date.getFullYear() + "-" + (date.getMonth()+1) +"-"+ date.getDate();
-        }
+          return moment(date).format("YYYY-MM-DD");
+        },
       });
-      //timeline.setTime((new Date('2010-06-01')).getTime());
       timeline.addTo(map);
     </script>
   </body>

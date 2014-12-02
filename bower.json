@@ -1,6 +1,6 @@
 {
   "name": "Leaflet.timeline",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "authors": [
     "Jonathan Skeate <skeate@gmail.com>"
   ],
@@ -23,5 +23,8 @@
   "dependencies": {
     "leaflet": "~0.7.3",
     "require": "*"
+  },
+  "devDependencies": {
+    "moment": "~2.8.4"
   }
 }
