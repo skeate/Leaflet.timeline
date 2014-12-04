@@ -8,88 +8,173 @@ https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.1.0'
+L.TimelineVersion = '0.2.0'
 
 L.Timeline = L.GeoJSON.extend
-  allData: []
-  allDates: []
-  initialize: (timedGeoJSON, @options) ->
-    L.GeoJSON.prototype.initialize.call this, undefined, @options
-    @_firstDate = Infinity
-    @_lastDate = -Infinity
-    if timedGeoJSON.features?
-      timedGeoJSON.features.forEach (feature) =>
-        startDate = ( new Date feature.properties.startDate ).getTime()
-        endDate = ( new Date feature.properties.endDate ).getTime()
-        @allData.push
-          geoJSON: feature
-          start: startDate
-          end: endDate
-        @allDates.push startDate
-        @allDates.push endDate
-        if startDate < @_firstDate then @_firstDate = startDate
-        if endDate > @_lastDate then @_lastDate = endDate
+  includes: L.Mixin.Events
+  times: []
+  ranges: []
+  options:
+    position: "bottomleft"
+    formatDate: (date) -> ""
+    enablePlayback: true
+    steps: 1000
+    duration: 10000
+    updateMapOnDrag: true
+    showTicks: true
+  initialize: (@timedGeoJSON, options) ->
+    L.GeoJSON.prototype.initialize.call this, undefined, options
+    L.extend @options, options
+    @process @timedGeoJSON
+
+  process: (data) ->
+    earliestStart = Infinity
+    latestEnd = -Infinity
+    data.features.forEach (feature) =>
+      start = ( new Date feature.properties.start ).getTime()
+      end = ( new Date feature.properties.end ).getTime()
+      @ranges.push
+        start: start
+        end: end
+        geoJSON: feature
+      @times.push start
+      @times.push end
+      if start < earliestStart then earliestStart = start
+      if end > latestEnd then latestEnd = end
+    @times = @times.sort()
+    if not @options.start then @options.start = earliestStart
+    if not @options.end then @options.end = latestEnd
 
   setTime: (time) ->
+    @fire 'timeline:change'
+    @time = (new Date time).getTime()
     @clearLayers()
-    @allData.forEach (range) =>
-      if range.start <= time and range.end >= time
+    @ranges.forEach (range) =>
+      if range.start <= @time and range.end >= @time
         @addData range.geoJSON
+
   onAdd: (map) ->
     L.GeoJSON.prototype.onAdd.call this, map
-    @dateSliderControl = L.Timeline.dateSliderControl this, @_firstDate, @_lastDate, @allDates
-    @dateSliderControl.addTo map
+    @timeSliderControl = L.Timeline.timeSliderControl this
+    @timeSliderControl.addTo map
 
-L.Timeline.DateSliderControl = L.Control.extend
-  options:
-    position: 'bottomleft'
-  initialize: (@timeline, @startDate, @endDate, @datelist) ->
-  buildDataList: (dates, container) ->
-    datalist = L.DomUtil.create 'datalist', '', container
-    datalistSelect = L.DomUtil.create 'select', '', datalist
-    dates.forEach (date) ->
+  getDisplayed: ->
+    showing = @ranges.filter (r) -> r.start <= @time and r.end >= @time
+    showing.map (shown) -> shown.geoJSON
+
+
+L.Timeline.TimeSliderControl = L.Control.extend
+  initialize: (@timeline) ->
+    @options.position = @timeline.options.position
+    @start = @timeline.options.start
+    @end = @timeline.options.end
+    @showTicks = @timeline.options.showTicks
+    @stepDuration = @timeline.options.duration / @timeline.options.steps
+    @stepSize = ( @end - @start ) / @timeline.options.steps
+    
+  _buildDataList: (container, times) ->
+    @_datalist = L.DomUtil.create 'datalist', '', container
+    datalistSelect = L.DomUtil.create 'select', '', @_datalist
+    times.forEach (time) ->
       datalistOption = L.DomUtil.create 'option', '', datalistSelect
-      datalistOption.value = date
-    datalist
-  onAdd: (map) ->
-    @_container = L.DomUtil.create 'div',
+      datalistOption.value = time
+    @_datalist.id = "timeline-datalist-" + Math.floor( Math.random() * 1000000 )
+    @_timeSlider.setAttribute 'list', @_datalist.id
+
+  _makePlayPause: (container) ->
+    @_playButton = L.DomUtil.create 'button', 'play', container
+    @_playButton.addEventListener 'click', => @_play()
+    @_pauseButton = L.DomUtil.create 'button', 'pause', container
+    @_pauseButton.addEventListener 'click', => @_pause()
+
+  _makePrevNext: (container) ->
+    @_prevButton = L.DomUtil.create 'button', 'prev'
+    @_nextButton = L.DomUtil.create 'button', 'next'
+    @_playButton.parentNode.insertBefore @_prevButton, @_playButton
+    @_playButton.parentNode.insertBefore @_nextButton, @_pauseButton.nextSibling
+    @_prevButton.addEventListener 'click', @_prev.bind @
+    @_nextButton.addEventListener 'click', @_next.bind @
+
+  _makeSlider: (container) ->
+    @_timeSlider = L.DomUtil.create 'input', 'time-slider', container
+    @_timeSlider.type = "range"
+    @_timeSlider.min = @start
+    @_timeSlider.max = @end
+    @_timeSlider.value = @start
+    @_timeSlider.addEventListener 'mousedown', => @map.dragging.disable()
+    document.addEventListener     'mouseup',   => @map.dragging.enable()
+    @_timeSlider.addEventListener 'input', @_sliderChanged.bind @
+    @_timeSlider.addEventListener 'change', @_sliderChanged.bind @
+
+  _makeOutput: (container) ->
+    @_output = L.DomUtil.create 'output', 'time-text', container
+    @_output.innerHTML = @timeline.options.formatDate new Date @start
+
+  _nearestEventTime: (findTime, mode=0) ->
+    retNext = false
+    lastTime = @timeline.times[0]
+    for time in @timeline.times[1..]
+      if retNext then return time
+      if time >= findTime
+        if mode == -1
+          return lastTime
+        else if mode == 1
+          if time == findTime then retNext = true
+          else return time
+        else
+          prevDiff = Math.abs findTime - lastTime
+          nextDiff = Math.abs time - findTime
+          return if prevDiff < nextDiff then prevDiff else nextDiff
+      lastTime = time
+    lastTime
+
+  _prev: (e) ->
+    e.stopPropagation()
+    @_pause()
+    prevTime = @_nearestEventTime @timeline.time, -1
+    @_timeSlider.value = prevTime
+    @timeline.setTime prevTime
+
+  _pause: ->
+    clearTimeout @_timer
+    @container.classList.remove 'playing'
+
+  _play: ->
+    clearTimeout @_timer
+    if +@_timeSlider.value == @end then @_timeSlider.value = @start
+    @_timeSlider.stepUp @stepSize
+    @_sliderChanged { target: value: @_timeSlider.value }
+    unless +@_timeSlider.value == @end
+      @container.classList.add 'playing'
+      @_timer = setTimeout @_play.bind @, @stepDuration
+
+  _next: (e) ->
+    e.stopPropagation()
+    @_pause()
+    nextTime = @_nearestEventTime @timeline.time, 1
+    @_timeSlider.value = nextTime
+    @timeline.setTime nextTime
+
+  _sliderChanged: (e) ->
+    time = +e.target.value
+    @timeline.setTime time
+    @_output.innerHTML = @timeline.options.formatDate new Date time
+
+  onAdd: (@map) ->
+    container = L.DomUtil.create 'div',
                     'leaflet-control-layers ' +
                     'leaflet-control-layers-expanded ' +
                     'leaflet-timeline-controls'
-    @_playButton = L.DomUtil.create 'button', 'play-button', @_container
-    @_dateSlider = L.DomUtil.create 'input', 'date-slider', @_container
-    @_dateText = L.DomUtil.create 'output', 'date-text', @_container
-    @_dataList = @buildDataList @datelist, @_container
-    @_dataList.id = Math.floor(Math.random() * 999999999)
-    @_playButton.innerHTML = "&#9654;"
-    @_dateSlider.type = "range"
-    @_dateSlider.min = @startDate
-    @_dateSlider.max = @endDate
-    @_dateSlider.value = @startDate
-    @_dateSlider.setAttribute 'list', @_dataList.id
-    @_dateSlider.addEventListener 'mousedown', -> map.dragging.disable()
-    sliderChanged = (e) =>
-      time = +e.target.value
-      @timeline.setTime time
-      @_dateText.innerHTML = @timeline.options.formatDate new Date time
-    @_dateSlider.addEventListener 'change', sliderChanged
-    document.addEventListener 'mouseup', -> map.dragging.enable()
-    @_dateText.innerHTML = @timeline.options.formatDate new Date @startDate
-    @timeline.setTime @startDate
-    @_playButton.addEventListener 'click', =>
-      stepDuration = 10
-      steps = 1000
-      stepSize = (@endDate - @startDate) / 1000
-      @_dateSlider.value = @startDate
-      step = 0
-      stepUp = =>
-        @_dateSlider.stepUp stepSize
-        sliderChanged {target:{value: @_dateSlider.value}}
-        if ++step < steps
-          setTimeout stepUp, stepDuration
-      stepUp()
-    @_container
+    buttonContainer = L.DomUtil.create 'div', 'button-container', container
+    @_makePlayPause buttonContainer
+    @_makeSlider container
+    if @showTicks
+      @_buildDataList container, @timeline.times
+      @_makePrevNext buttonContainer
+    @_makeOutput container
+    @timeline.setTime @start
+    @container = container
 
 L.timeline = (timedGeoJSON, options) -> new L.Timeline timedGeoJSON, options
-L.Timeline.dateSliderControl = (timeline, start, end, datelist) ->
-  new L.Timeline.DateSliderControl timeline, start, end, datelist
+L.Timeline.timeSliderControl = (timeline, start, end, timelist) ->
+  new L.Timeline.TimeSliderControl timeline, start, end, timelist
