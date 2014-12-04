@@ -9,13 +9,26 @@
     <link href="../dist/leaflet.timeline.css" rel="stylesheet">
 
     <style>
+      @import url(http://fonts.googleapis.com/css?family=Open+Sans); 
       html, body{
         margin: 0;
         padding: 0;
+        font-family: "Open Sans", sans-serif;
+      }
+      #info{
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 20vw;
+        padding: 1em;
       }
       #map{
-        width: 100vw;
-        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 20vw;
+        bottom: 0;
+        right: 0;
       }
       .leaflet-bottom.leaflet-left{
         width: 100%;
@@ -29,18 +42,40 @@
     </style>
   </head>
   <body>
+    <div id="info">
+      <h1>Earthquakes</h1>
+      <h2>Over the Last 24 Hours</h2>
+      <h3>Currently displayed:</h3>
+      <ul id="displayed-list"></ul>
+    </div>
     <div id="map"></div>
 
     <script>
       var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       var osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">' +
         'OpenStreetMap</a> contributors';
-      var osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
+      var osm = L.tileLayer(osmUrl, {
+        maxZoom: 18,
+        attribution: osmAttrib,
+        noWrap: true
+      });
       var map = L.map('map', {
         layers: [osm],
         center: new L.LatLng(0,0),
-        zoom: 3
+        zoom: 3,
+        maxBounds: [[90,-180], [-90, 180]]
       });
+
+      function updateList(timeline){
+        var displayed = timeline.getDisplayed();
+        var list = document.getElementById('displayed-list');
+        list.innerHTML = "";
+        displayed.forEach(function(quake){
+          var li = document.createElement('li');
+          li.innerHTML = quake.properties.title;
+          list.appendChild(li);
+        })
+      }
 
       function eqfeed_callback(data){
         // wrangle data into format Leaflet.timeline expects
@@ -67,6 +102,10 @@
           }
         });
         timeline.addTo(map);
+        timeline.on('change', function(e){
+          updateList(e.target);
+        });
+        updateList(timeline);
       }
     </script>
     <script src="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>

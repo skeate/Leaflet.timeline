@@ -78,13 +78,6 @@ take at least a bit longer -- after each frame, the next one displays in
 `duration/steps` ms, so each frame really takes frame processing time PLUS
 step time.
 
-#### `updateMapOnDrag`
-*default: true*
-
-Two things update as you drag the slider: the time shown and the elements
-displayed on the map. A very busy map might slow this down, so for better UX
-disable this. The time shown will still update.
-
 #### `showTicks`
 *default: true*
 
@@ -129,6 +122,11 @@ Then wrangled the data into the right format (examples/borders-parse.js). After
 that, just pass the data to `Leaflet.timeline` and let it handle everything.
 
 ## Change log
+
+### 0.3.0
+- Fixed Pause button not turning back into Play button on playback completion
+- Fixed clicks on control buttons zooming map
+- Fixed `getDisplayed` and event timing
 
 ### 0.2.0
 - Added previous/next/pause

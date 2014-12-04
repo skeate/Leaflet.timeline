@@ -11,7 +11,7 @@ http://leafletjs.com
  */
 
 (function() {
-  L.TimelineVersion = '0.2.0';
+  L.TimelineVersion = '0.3.0';
 
   L.Timeline = L.GeoJSON.extend({
     includes: L.Mixin.Events,
@@ -25,7 +25,6 @@ http://leafletjs.com
       enablePlayback: true,
       steps: 1000,
       duration: 10000,
-      updateMapOnDrag: true,
       showTicks: true
     },
     initialize: function(timedGeoJSON, options) {
@@ -67,16 +66,16 @@ http://leafletjs.com
       }
     },
     setTime: function(time) {
-      this.fire('timeline:change');
       this.time = (new Date(time)).getTime();
       this.clearLayers();
-      return this.ranges.forEach((function(_this) {
+      this.ranges.forEach((function(_this) {
         return function(range) {
           if (range.start <= _this.time && range.end >= _this.time) {
             return _this.addData(range.geoJSON);
           }
         };
       })(this));
+      return this.fire('change');
     },
     onAdd: function(map) {
       L.GeoJSON.prototype.onAdd.call(this, map);
@@ -85,9 +84,11 @@ http://leafletjs.com
     },
     getDisplayed: function() {
       var showing;
-      showing = this.ranges.filter(function(r) {
-        return r.start <= this.time && r.end >= this.time;
-      });
+      showing = this.ranges.filter((function(_this) {
+        return function(r) {
+          return r.start <= _this.time && r.end >= _this.time;
+        };
+      })(this));
       return showing.map(function(shown) {
         return shown.geoJSON;
       });
@@ -123,18 +124,22 @@ http://leafletjs.com
           return _this._play();
         };
       })(this));
+      L.DomEvent.disableClickPropagation(this._playButton);
       this._pauseButton = L.DomUtil.create('button', 'pause', container);
-      return this._pauseButton.addEventListener('click', (function(_this) {
+      this._pauseButton.addEventListener('click', (function(_this) {
         return function() {
           return _this._pause();
         };
       })(this));
+      return L.DomEvent.disableClickPropagation(this._pauseButton);
     },
     _makePrevNext: function(container) {
       this._prevButton = L.DomUtil.create('button', 'prev');
       this._nextButton = L.DomUtil.create('button', 'next');
       this._playButton.parentNode.insertBefore(this._prevButton, this._playButton);
       this._playButton.parentNode.insertBefore(this._nextButton, this._pauseButton.nextSibling);
+      L.DomEvent.disableClickPropagation(this._prevButton);
+      L.DomEvent.disableClickPropagation(this._nextButton);
       this._prevButton.addEventListener('click', this._prev.bind(this));
       return this._nextButton.addEventListener('click', this._next.bind(this));
     },
@@ -197,9 +202,8 @@ http://leafletjs.com
       }
       return lastTime;
     },
-    _prev: function(e) {
+    _prev: function() {
       var prevTime;
-      e.stopPropagation();
       this._pause();
       prevTime = this._nearestEventTime(this.timeline.time, -1);
       this._timeSlider.value = prevTime;
@@ -223,11 +227,12 @@ http://leafletjs.com
       if (+this._timeSlider.value !== this.end) {
         this.container.classList.add('playing');
         return this._timer = setTimeout(this._play.bind(this, this.stepDuration));
+      } else {
+        return this.container.classList.remove('playing');
       }
     },
-    _next: function(e) {
+    _next: function() {
       var nextTime;
-      e.stopPropagation();
       this._pause();
       nextTime = this._nearestEventTime(this.timeline.time, 1);
       this._timeSlider.value = nextTime;
@@ -243,12 +248,14 @@ http://leafletjs.com
       var buttonContainer, container;
       this.map = map;
       container = L.DomUtil.create('div', 'leaflet-control-layers ' + 'leaflet-control-layers-expanded ' + 'leaflet-timeline-controls');
-      buttonContainer = L.DomUtil.create('div', 'button-container', container);
-      this._makePlayPause(buttonContainer);
+      if (this.timeline.options.enablePlayback) {
+        buttonContainer = L.DomUtil.create('div', 'button-container', container);
+        this._makePlayPause(buttonContainer);
+        this._makePrevNext(buttonContainer);
+      }
       this._makeSlider(container);
       if (this.showTicks) {
         this._buildDataList(container, this.timeline.times);
-        this._makePrevNext(buttonContainer);
       }
       this._makeOutput(container);
       this.timeline.setTime(this.start);

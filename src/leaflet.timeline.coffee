@@ -8,7 +8,7 @@ https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.2.0'
+L.TimelineVersion = '0.3.0'
 
 L.Timeline = L.GeoJSON.extend
   includes: L.Mixin.Events
@@ -20,7 +20,6 @@ L.Timeline = L.GeoJSON.extend
     enablePlayback: true
     steps: 1000
     duration: 10000
-    updateMapOnDrag: true
     showTicks: true
   initialize: (@timedGeoJSON, options) ->
     L.GeoJSON.prototype.initialize.call this, undefined, options
@@ -46,12 +45,12 @@ L.Timeline = L.GeoJSON.extend
     if not @options.end then @options.end = latestEnd
 
   setTime: (time) ->
-    @fire 'timeline:change'
     @time = (new Date time).getTime()
     @clearLayers()
     @ranges.forEach (range) =>
       if range.start <= @time and range.end >= @time
         @addData range.geoJSON
+    @fire 'change'
 
   onAdd: (map) ->
     L.GeoJSON.prototype.onAdd.call this, map
@@ -59,7 +58,7 @@ L.Timeline = L.GeoJSON.extend
     @timeSliderControl.addTo map
 
   getDisplayed: ->
-    showing = @ranges.filter (r) -> r.start <= @time and r.end >= @time
+    showing = @ranges.filter (r) => r.start <= @time and r.end >= @time
     showing.map (shown) -> shown.geoJSON
 
 
@@ -84,14 +83,18 @@ L.Timeline.TimeSliderControl = L.Control.extend
   _makePlayPause: (container) ->
     @_playButton = L.DomUtil.create 'button', 'play', container
     @_playButton.addEventListener 'click', => @_play()
+    L.DomEvent.disableClickPropagation @_playButton
     @_pauseButton = L.DomUtil.create 'button', 'pause', container
     @_pauseButton.addEventListener 'click', => @_pause()
+    L.DomEvent.disableClickPropagation @_pauseButton
 
   _makePrevNext: (container) ->
     @_prevButton = L.DomUtil.create 'button', 'prev'
     @_nextButton = L.DomUtil.create 'button', 'next'
     @_playButton.parentNode.insertBefore @_prevButton, @_playButton
     @_playButton.parentNode.insertBefore @_nextButton, @_pauseButton.nextSibling
+    L.DomEvent.disableClickPropagation @_prevButton
+    L.DomEvent.disableClickPropagation @_nextButton
     @_prevButton.addEventListener 'click', @_prev.bind @
     @_nextButton.addEventListener 'click', @_next.bind @
 
@@ -128,8 +131,7 @@ L.Timeline.TimeSliderControl = L.Control.extend
       lastTime = time
     lastTime
 
-  _prev: (e) ->
-    e.stopPropagation()
+  _prev: ->
     @_pause()
     prevTime = @_nearestEventTime @timeline.time, -1
     @_timeSlider.value = prevTime
@@ -147,9 +149,10 @@ L.Timeline.TimeSliderControl = L.Control.extend
     unless +@_timeSlider.value == @end
       @container.classList.add 'playing'
       @_timer = setTimeout @_play.bind @, @stepDuration
+    else
+      @container.classList.remove 'playing'
 
-  _next: (e) ->
-    e.stopPropagation()
+  _next: ->
     @_pause()
     nextTime = @_nearestEventTime @timeline.time, 1
     @_timeSlider.value = nextTime
@@ -165,12 +168,13 @@ L.Timeline.TimeSliderControl = L.Control.extend
                     'leaflet-control-layers ' +
                     'leaflet-control-layers-expanded ' +
                     'leaflet-timeline-controls'
-    buttonContainer = L.DomUtil.create 'div', 'button-container', container
-    @_makePlayPause buttonContainer
+    if @timeline.options.enablePlayback
+      buttonContainer = L.DomUtil.create 'div', 'button-container', container
+      @_makePlayPause buttonContainer
+      @_makePrevNext buttonContainer
     @_makeSlider container
     if @showTicks
       @_buildDataList container, @timeline.times
-      @_makePrevNext buttonContainer
     @_makeOutput container
     @timeline.setTime @start
     @container = container
