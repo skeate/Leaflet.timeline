@@ -1,6 +1,11 @@
-# Leaflet.timeline
+# Leaflet.timeline 0.2.0
 
 Show any changing geospatial data over time, from points to polygons.
+
+If you want smooth motion of markers from point to point, this is not your
+plugin. Please check out [LeafletPlayback][], or for real-time data, try
+[Leaflet Realtime][], both plugins from which I may or may not have pilfered
+some ideas.
 
 ## Usage
 
@@ -121,6 +126,20 @@ unfortunately it was not in GeoJSON. Converted it with [ogr2ogr][5]:
 Then wrangled the data into the right format (examples/borders-parse.js). After
 that, just pass the data to `Leaflet.timeline` and let it handle everything.
 
+## Change log
+
+### 0.2.0
+- Added previous/next/pause
+- Change behavior of play button (will play from wherever it is rather than
+  reset to the beginning)
+- Lots of code restructuring
+- Add more extensive default styling, using Sass
+
+### 0.1.0
+- It kinda works?
+
+[Leaflet Realtime]: https://github.com/perliedman/leaflet-realtime
+[LeafletPlayback]: https://github.com/hallahan/LeafletPlayback
 [1]: http://skeate.github.io/Leaflet.timeline/earthquakes.html
 [2]: http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
 [3]: http://skeate.github.io/Leaflet.timeline/borders.html
