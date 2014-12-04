@@ -20,7 +20,7 @@ The data you pass in should be something like this:
       "type": "Feature",
       "properties": {
         "start": "1970-01-01",
-        "end": new Date()
+        "end": "2014-12-04"
       },
       "geometry": { ... }
     }
@@ -28,47 +28,49 @@ The data you pass in should be something like this:
 }
 ```
 
+The date can really be anything `Date()` can process.
+
 It does add some extra options:
 
 ## Options
 
-### [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
+#### [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
 
-### `start`
+#### `start`
 *default: earliest `start` in GeoJSON*
 
 The beginning/minimum value of the timeline.
 
-### `end`
+#### `end`
 *default: latest `end` in GeoJSON*
 
 The end/maximum value of the timeline.
 
-### `position`
+#### `position`
 *default: bottomleft*
 
 [Position](http://leafletjs.com/reference.html#control) for the timeline
 controls. Probably doesn't really matter as you'll likely want to expand them
 anyway.
 
-### `formatDate`
+#### `formatDate`
 *default: `(date) -> ""`*
 
 A function that takes in a Unix timestamp and outputs a string. Ideally for
 formatting the timestamp, but hey, you can do whatever you want.
 
-### `enablePlayback`
+#### `enablePlayback`
 *default: `true`*
 
 Show playback controls (i.e. prev/play/pause/next).
 
-### `steps`
+#### `steps`
 *default: 1000*
 
 How many steps to break the timeline into. Each step will then be `(end-start) /
 steps`. Only affects playback.
 
-### `duration`
+#### `duration`
 *default: 10000*
 
 Minimum time, in ms, for the playback to take. Will almost certainly actually
@@ -76,14 +78,14 @@ take at least a bit longer -- after each frame, the next one displays in
 `duration/steps` ms, so each frame really takes frame processing time PLUS
 step time.
 
-### `updateMapOnDrag`
+#### `updateMapOnDrag`
 *default: true*
 
 Two things update as you drag the slider: the time shown and the elements
 displayed on the map. A very busy map might slow this down, so for better UX
 disable this. The time shown will still update.
 
-### `showTicks`
+#### `showTicks`
 *default: true*
 
 Show tick marks on slider, representing changes in value(s).
