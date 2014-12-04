@@ -25,7 +25,8 @@ http://leafletjs.com
       enablePlayback: true,
       steps: 1000,
       duration: 10000,
-      showTicks: true
+      showTicks: true,
+      waitToUpdateMap: false
     },
     initialize: function(timedGeoJSON, options) {
       this.timedGeoJSON = timedGeoJSON;
@@ -220,6 +221,7 @@ http://leafletjs.com
       }
       this._timeSlider.stepUp(this.stepSize);
       this._sliderChanged({
+        type: 'change',
         target: {
           value: this._timeSlider.value
         }
@@ -241,7 +243,9 @@ http://leafletjs.com
     _sliderChanged: function(e) {
       var time;
       time = +e.target.value;
-      this.timeline.setTime(time);
+      if (!this.timeline.options.waitToUpdateMap || e.type === 'change') {
+        this.timeline.setTime(time);
+      }
       return this._output.innerHTML = this.timeline.options.formatDate(new Date(time));
     },
     onAdd: function(map) {

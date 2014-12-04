@@ -21,6 +21,7 @@ L.Timeline = L.GeoJSON.extend
     steps: 1000
     duration: 10000
     showTicks: true
+    waitToUpdateMap: false
   initialize: (@timedGeoJSON, options) ->
     L.GeoJSON.prototype.initialize.call this, undefined, options
     L.extend @options, options
@@ -145,7 +146,9 @@ L.Timeline.TimeSliderControl = L.Control.extend
     clearTimeout @_timer
     if +@_timeSlider.value == @end then @_timeSlider.value = @start
     @_timeSlider.stepUp @stepSize
-    @_sliderChanged { target: value: @_timeSlider.value }
+    @_sliderChanged 
+      type: 'change'
+      target: value: @_timeSlider.value
     unless +@_timeSlider.value == @end
       @container.classList.add 'playing'
       @_timer = setTimeout @_play.bind @, @stepDuration
@@ -160,7 +163,8 @@ L.Timeline.TimeSliderControl = L.Control.extend
 
   _sliderChanged: (e) ->
     time = +e.target.value
-    @timeline.setTime time
+    if not @timeline.options.waitToUpdateMap or e.type == 'change'
+      @timeline.setTime time
     @_output.innerHTML = @timeline.options.formatDate new Date time
 
   onAdd: (@map) ->
