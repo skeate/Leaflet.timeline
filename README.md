@@ -78,6 +78,11 @@ Two things update as you drag the slider: the time shown and the elements
 displayed on the map. A very busy map might slow this down, so for better UX
 disable this. The time shown will still update.
 
+### `showTicks`
+*default: true*
+
+Show tick marks on slider, representing changes in value(s).
+
 ## Events
 
 ### `timeline:change`
@@ -86,6 +91,38 @@ through playback).
 
 ## Methods
 
+### `setTime`
+Sets the current timeline time. Will parse any dates in just about any format
+you throw at it.
+
 ### `getDisplayed`
 Returns the original GeoJSON of the features that are currently being displayed
 on the map.
+
+## Examples
+
+### Earthquakes
+
+[Example here][1]. USGS provides [GeoJSON(P) files][2] with earthquake data,
+including time and magnitude. For this example, that data is read, parsed to the
+right format (`start` and `end` values in the GeoJSON `properties`), and added
+to a `Leaflet.timeline`.
+
+
+### Country borders after WWII
+
+[Example here][3]. I found some historical country border data [here][4], though
+unfortunately it was not in GeoJSON. Converted it with [ogr2ogr][5]:
+
+    $ ogr2ogr -f "GeoJSON" \
+      -select CNTRY_NAME,COWSYEAR,COWSMONTH,COWSDAY,COWEYEAR,COWEMONTH,COWEDAY \
+      borders.json cshapes.shp
+
+Then wrangled the data into the right format (examples/borders-parse.js). After
+that, just pass the data to `Leaflet.timeline` and let it handle everything.
+
+[1]: http://skeate.github.io/Leaflet.timeline/earthquakes.html
+[2]: http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+[3]: http://skeate.github.io/Leaflet.timeline/borders.html
+[4]: http://nils.weidmann.ws/projects/cshapes
+[5]: http://www.gdal.org/ogr2ogr.html
