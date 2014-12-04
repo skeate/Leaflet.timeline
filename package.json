@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
-    "coffee-script": "^1.8.0"
+    "coffee-script": "^1.8.0",
+    "sass": "^0.5.0"
   }
 }

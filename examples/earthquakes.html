@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Leaflet.timeline</title>
+    <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <script src="../dist/leaflet.timeline.js"></script>
+
+    <link href="../bower_components/leaflet/dist/leaflet.css" rel="stylesheet">
+    <link href="../dist/leaflet.timeline.css" rel="stylesheet">
+
+    <style>
+      html, body{
+        margin: 0;
+        padding: 0;
+      }
+      #map{
+        width: 100vw;
+        height: 100vh;
+      }
+      .leaflet-bottom.leaflet-left{
+        width: 100%;
+      }
+      .leaflet-control-container .leaflet-timeline-controls{
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      var osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">' +
+        'OpenStreetMap</a> contributors';
+      var osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
+      var map = L.map('map', {
+        layers: [osm],
+        center: new L.LatLng(0,0),
+        zoom: 3
+      });
+
+      function eqfeed_callback(data){
+        // wrangle data into format Leaflet.timeline expects
+        // earthquake data only has a time, so we'll use that as a "start"
+        // and the "end" will be that + some value based on magnitude
+        data.features.forEach(function(quake){
+          var time = quake.properties.time;
+          quake.properties.start = time;
+          quake.properties.end   = time + quake.properties.mag * 1800000;
+        });
+        var timeline = L.timeline(data, {
+          formatDate: function(date){
+            return moment(date).format("YYYY-MM-DD HH:MM:SS");
+          },
+          pointToLayer: function(data, latlng){
+            var hue_min = 120;
+            var hue_max = 0;
+            var hue = data.properties.mag / 10 * (hue_max - hue_min) + hue_min;
+            return L.circleMarker(latlng, {
+              radius: data.properties.mag * 3,
+              color: "hsl("+hue+", 100%, 50%)",
+              fillColor: "hsl("+hue+", 100%, 50%)"
+            });
+          }
+        });
+        timeline.addTo(map);
+      }
+    </script>
+    <script src="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>
+  </body>
+</html>
