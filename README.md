@@ -92,17 +92,17 @@ Show tick marks on slider, representing changes in value(s).
 
 ## Events
 
-### `timeline:change`
+#### `timeline:change`
 Fired when the selected time changes (either through manually sliding or
 through playback).
 
 ## Methods
 
-### `setTime`
+#### `setTime`
 Sets the current timeline time. Will parse any dates in just about any format
 you throw at it.
 
-### `getDisplayed`
+#### `getDisplayed`
 Returns the original GeoJSON of the features that are currently being displayed
 on the map.
 
