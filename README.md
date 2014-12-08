@@ -1,4 +1,4 @@
-# Leaflet.timeline 0.2.0
+# Leaflet.timeline 0.3.0
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -34,7 +34,7 @@ It does add some extra options:
 
 ## Options
 
-#### [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
+see also [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
 
 #### `start`
 *default: earliest `start` in GeoJSON*
@@ -78,17 +78,17 @@ take at least a bit longer -- after each frame, the next one displays in
 `duration/steps` ms, so each frame really takes frame processing time PLUS
 step time.
 
-#### `updateMapOnDrag`
-*default: true*
-
-Two things update as you drag the slider: the time shown and the elements
-displayed on the map. A very busy map might slow this down, so for better UX
-disable this. The time shown will still update.
-
 #### `showTicks`
 *default: true*
 
 Show tick marks on slider, representing changes in value(s).
+
+#### `waitToUpdateMap`
+*default: false*
+
+Wait until the user is finished changing the date to update the map. By default,
+both the map and the date update for every change. With complex data, this can
+slow things down, so set this to true to only update the displayed date.
 
 ## Events
 
@@ -129,6 +129,14 @@ Then wrangled the data into the right format (examples/borders-parse.js). After
 that, just pass the data to `Leaflet.timeline` and let it handle everything.
 
 ## Change log
+
+### 0.3.0
+- Fixed Pause button not turning back into Play button on playback completion
+- Fixed clicks on control buttons zooming map
+- Fixed `getDisplayed` and event timing
+- Major performance improvements
+- Add `waitToUpdateMap` option to allow dragging the slider without updating
+  the map until user is done
 
 ### 0.2.0
 - Added previous/next/pause
