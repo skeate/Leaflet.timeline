@@ -92,7 +92,7 @@ slow things down, so set this to true to only update the displayed date.
 
 ## Events
 
-#### `timeline:change`
+#### `change`
 Fired when the selected time changes (either through manually sliding or
 through playback).
 
