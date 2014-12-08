@@ -99,7 +99,7 @@ L.Timeline = L.GeoJSON.extend
       return @
     options = @options
     if options.filter and !options.filter(geojson) then return
-    layer = L.GeoJSON.geometryToLayer geojson, options
+    layer = L.GeoJSON.geometryToLayer geojson, options.pointToLayer
     # timeline custom bit here
     @displayedLayers.push
       layer: layer

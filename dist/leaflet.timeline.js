@@ -143,7 +143,7 @@ http://leafletjs.com
       if (options.filter && !options.filter(geojson)) {
         return;
       }
-      layer = L.GeoJSON.geometryToLayer(geojson, options);
+      layer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer);
       this.displayedLayers.push({
         layer: layer,
         geoJSON: geojson
