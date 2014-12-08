@@ -11,12 +11,77 @@ http://leafletjs.com
  */
 
 (function() {
+  var IntervalTree;
+
   L.TimelineVersion = '0.3.0';
+
+  IntervalTree = (function() {
+    function IntervalTree() {
+      this._root = null;
+      this._list = null;
+    }
+
+    IntervalTree.prototype.insert = function(begin, end, value, node, parent, parentSide) {
+      var new_node;
+      if (node === void 0) {
+        node = this._root;
+      }
+      if (!node) {
+        new_node = {
+          low: begin,
+          high: end,
+          max: end,
+          data: value,
+          left: null,
+          right: null,
+          parent: parent
+        };
+        if (parent) {
+          parent[parentSide] = new_node;
+        } else {
+          this._root = new_node;
+        }
+        return new_node;
+      } else {
+        if (begin < node.low || begin === node.low && end < node.high) {
+          new_node = this.insert(begin, end, value, node.left, node, 'left');
+        } else {
+          new_node = this.insert(begin, end, value, node.right, node, 'right');
+        }
+        node.max = Math.max(node.max, new_node.max);
+      }
+      return new_node;
+    };
+
+    IntervalTree.prototype.lookup = function(value, node) {
+      if (node === void 0) {
+        node = this._root;
+        this._list = [];
+      }
+      if (node === null || node.max < value) {
+        return;
+      }
+      if (node.left !== null) {
+        this.lookup(value, node.left);
+      }
+      if (node.low <= value) {
+        if (node.high >= value) {
+          this._list.push(node.data);
+        }
+        this.lookup(value, node.right);
+      }
+      return this._list;
+    };
+
+    return IntervalTree;
+
+  })();
 
   L.Timeline = L.GeoJSON.extend({
     includes: L.Mixin.Events,
     times: [],
-    ranges: [],
+    displayedLayers: [],
+    ranges: null,
     options: {
       position: "bottomleft",
       formatDate: function(date) {
@@ -29,10 +94,10 @@ http://leafletjs.com
       waitToUpdateMap: false
     },
     initialize: function(timedGeoJSON, options) {
-      this.timedGeoJSON = timedGeoJSON;
       L.GeoJSON.prototype.initialize.call(this, void 0, options);
       L.extend(this.options, options);
-      return this.process(this.timedGeoJSON);
+      this.ranges = new IntervalTree();
+      return this.process(timedGeoJSON);
     },
     process: function(data) {
       var earliestStart, latestEnd;
@@ -43,11 +108,7 @@ http://leafletjs.com
           var end, start;
           start = (new Date(feature.properties.start)).getTime();
           end = (new Date(feature.properties.end)).getTime();
-          _this.ranges.push({
-            start: start,
-            end: end,
-            geoJSON: feature
-          });
+          _this.ranges.insert(start, end, feature);
           _this.times.push(start);
           _this.times.push(end);
           if (start < earliestStart) {
@@ -66,16 +127,70 @@ http://leafletjs.com
         return this.options.end = latestEnd;
       }
     },
-    setTime: function(time) {
-      this.time = (new Date(time)).getTime();
-      this.clearLayers();
-      this.ranges.forEach((function(_this) {
-        return function(range) {
-          if (range.start <= _this.time && range.end >= _this.time) {
-            return _this.addData(range.geoJSON);
+    addData: function(geojson) {
+      var feature, features, layer, options, _i, _len;
+      features = L.Util.isArray(geojson) ? geojson : geojson.features;
+      if (features) {
+        for (_i = 0, _len = features.length; _i < _len; _i++) {
+          feature = features[_i];
+          if (feature.geometries || feature.geometry || feature.features || feature.coordinates) {
+            this.addData(feature);
           }
-        };
-      })(this));
+        }
+        return this;
+      }
+      options = this.options;
+      if (options.filter && !options.filter(geojson)) {
+        return;
+      }
+      layer = L.GeoJSON.geometryToLayer(geojson, options);
+      this.displayedLayers.push({
+        layer: layer,
+        geoJSON: geojson
+      });
+      layer.feature = L.GeoJSON.asFeature(geojson);
+      layer.defaultOptions = layer.options;
+      this.resetStyle(layer);
+      if (options.onEachFeature) {
+        options.onEachFeature(geojson, layer);
+      }
+      return this.addLayer(layer);
+    },
+    removeLayer: function(layer, removeDisplayed) {
+      if (removeDisplayed == null) {
+        removeDisplayed = true;
+      }
+      L.GeoJSON.prototype.removeLayer.call(this, layer);
+      if (removeDisplayed) {
+        return this.displayedLayers = this.displayedLayers.filter(function(displayedLayer) {
+          return displayedLayer.layer !== layer;
+        });
+      }
+    },
+    setTime: function(time) {
+      var range, ranges, _i, _len;
+      this.time = (new Date(time)).getTime();
+      ranges = this.ranges.lookup(time);
+      var i, j, found;
+    for( i = 0; i < this.displayedLayers.length; i++ ){
+      found = false;
+      for( j = 0; j < ranges.length; j++ ){
+        if( this.displayedLayers[i].geoJSON === ranges[j] ){
+          found = true;
+          ranges.splice(j, 1);
+          break;
+        }
+      }
+      if( !found ){
+        var to_remove = this.displayedLayers.splice(i--,1);
+        this.removeLayer(to_remove[0].layer, false);
+      }
+    }
+    ;
+      for (_i = 0, _len = ranges.length; _i < _len; _i++) {
+        range = ranges[_i];
+        this.addData(range);
+      }
       return this.fire('change');
     },
     onAdd: function(map) {
@@ -84,15 +199,7 @@ http://leafletjs.com
       return this.timeSliderControl.addTo(map);
     },
     getDisplayed: function() {
-      var showing;
-      showing = this.ranges.filter((function(_this) {
-        return function(r) {
-          return r.start <= _this.time && r.end >= _this.time;
-        };
-      })(this));
-      return showing.map(function(shown) {
-        return shown.geoJSON;
-      });
+      return this.ranges.lookup(this.time);
     }
   });
 
