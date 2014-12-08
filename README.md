@@ -1,4 +1,4 @@
-# Leaflet.timeline 0.2.0
+# Leaflet.timeline 0.3.0
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -34,7 +34,7 @@ It does add some extra options:
 
 ## Options
 
-#### [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
+see also [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
 
 #### `start`
 *default: earliest `start` in GeoJSON*
@@ -134,6 +134,9 @@ that, just pass the data to `Leaflet.timeline` and let it handle everything.
 - Fixed Pause button not turning back into Play button on playback completion
 - Fixed clicks on control buttons zooming map
 - Fixed `getDisplayed` and event timing
+- Major performance improvements
+- Add `waitToUpdateMap` option to allow dragging the slider without updating
+  the map until user is done
 
 ### 0.2.0
 - Added previous/next/pause
