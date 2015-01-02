@@ -8,7 +8,7 @@ https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.3.0'
+L.TimelineVersion = '0.3.2'
 
 # better range lookup performance.
 # http://jsperf.com/range-lookup-algorithm-comparison
@@ -167,9 +167,12 @@ L.Timeline.TimeSliderControl = L.Control.extend
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
     datalistSelect = L.DomUtil.create 'select', '', @_datalist
+    used_times = [];
     times.forEach (time) ->
+      if used_times[time] then return
       datalistOption = L.DomUtil.create 'option', '', datalistSelect
       datalistOption.value = time
+      used_times[time] = true
     @_datalist.id = "timeline-datalist-" + Math.floor( Math.random() * 1000000 )
     @_timeSlider.setAttribute 'list', @_datalist.id
 

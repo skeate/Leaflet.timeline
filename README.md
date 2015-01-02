@@ -1,4 +1,4 @@
-# Leaflet.timeline 0.3.0
+# Leaflet.timeline 0.3.2
 
 Show any changing geospatial data over time, from points to polygons.
 
