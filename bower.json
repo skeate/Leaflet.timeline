@@ -21,8 +21,7 @@
     "tests"
   ],
   "dependencies": {
-    "leaflet": "~0.7.3",
-    "require": "*"
+    "leaflet": "0.7.3 - 0.8.0"
   },
   "devDependencies": {
     "moment": "~2.8.4"

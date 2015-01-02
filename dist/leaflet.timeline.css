@@ -13,7 +13,7 @@
       width: 33%;
       height: 20px; }
       .leaflet-timeline-controls .button-container button::before, .leaflet-timeline-controls .button-container button::after {
-        content: "";
+        content: '';
         position: absolute; }
       .leaflet-timeline-controls .button-container button.play::before {
         border: 7px solid transparent;
@@ -69,5 +69,3 @@
   .leaflet-timeline-controls output {
     width: 10%;
     float: right; }
-
-/*# sourceMappingURL=leaflet.timeline.css.map */
