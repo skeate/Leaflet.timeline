@@ -1,10 +1,10 @@
 {
   "name": "Leaflet.timeline",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "coffee -o dist/ -c src/leaflet.timeline-src.coffee"
+    "prepublish": "coffee -o dist -c src/leaflet.timeline.coffee"
   },
   "repository": {
     "type": "git",
