@@ -214,13 +214,18 @@ http://leafletjs.com
       return this.stepSize = (this.end - this.start) / this.timeline.options.steps;
     },
     _buildDataList: function(container, times) {
-      var datalistSelect;
+      var datalistSelect, used_times;
       this._datalist = L.DomUtil.create('datalist', '', container);
       datalistSelect = L.DomUtil.create('select', '', this._datalist);
+      used_times = [];
       times.forEach(function(time) {
         var datalistOption;
+        if (used_times[time]) {
+          return;
+        }
         datalistOption = L.DomUtil.create('option', '', datalistSelect);
-        return datalistOption.value = time;
+        datalistOption.value = time;
+        return used_times[time] = true;
       });
       this._datalist.id = "timeline-datalist-" + Math.floor(Math.random() * 1000000);
       return this._timeSlider.setAttribute('list', this._datalist.id);
