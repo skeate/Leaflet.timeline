@@ -8,7 +8,7 @@ https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.3.0'
+L.TimelineVersion = '0.3.2'
 
 # better range lookup performance.
 # http://jsperf.com/range-lookup-algorithm-comparison

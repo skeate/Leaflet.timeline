@@ -1,6 +1,6 @@
 {
   "name": "Leaflet.timeline",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -13,7 +13,7 @@ http://leafletjs.com
 (function() {
   var IntervalTree;
 
-  L.TimelineVersion = '0.3.0';
+  L.TimelineVersion = '0.3.2';
 
   IntervalTree = (function() {
     function IntervalTree() {
