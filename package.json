@@ -1,5 +1,5 @@
 {
-  "name": "Leaflet.timeline",
+  "name": "leaflet.timeline",
   "version": "0.3.2",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
