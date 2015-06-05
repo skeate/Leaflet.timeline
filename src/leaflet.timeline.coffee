@@ -104,7 +104,8 @@ L.Timeline = L.GeoJSON.extend
     if features
       for feature in features
         # only add this if geometry or geometries are set and not null
-        if feature.geometries or feature.geometry or feature.features or feature.coordinates
+        if feature.geometries or feature.geometry or \
+            feature.features or feature.coordinates
           @addData feature
       return @
     @_addData(geojson)
@@ -179,11 +180,12 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @showTicks = @timeline.options.showTicks
     @stepDuration = @timeline.options.duration / @timeline.options.steps
     @stepSize = ( @end - @start ) / @timeline.options.steps
+    @smallStepSize = @timeline.options.smallstepsize or @stepSize / 10
 
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
     datalistSelect = L.DomUtil.create 'select', '', @_datalist
-    used_times = [];
+    used_times = []
     times.forEach (time) ->
       if used_times[time] then return
       datalistOption = L.DomUtil.create 'option', '', datalistSelect
@@ -209,6 +211,18 @@ L.Timeline.TimeSliderControl = L.Control.extend
     L.DomEvent.disableClickPropagation @_nextButton
     @_prevButton.addEventListener 'click', @_prev.bind @
     @_nextButton.addEventListener 'click', @_next.bind @
+
+  _makeRevff: (container) ->
+    @_revButton = L.DomUtil.create 'button', 'rev'
+    @_ffButton = L.DomUtil.create 'button', 'ff'
+    @_revButton.innerHTML = '<'
+    @_ffButton.innerHTML = '>'
+    @_playButton.parentNode.insertBefore @_revButton, @_prevButton
+    @_playButton.parentNode.insertBefore @_ffButton, @_nextButton.nextSibling
+    L.DomEvent.disableClickPropagation @_revButton
+    L.DomEvent.disableClickPropagation @_ffButton
+    @_revButton.addEventListener 'mousedown', @_rev.bind @
+    @_ffButton.addEventListener 'mousedown', @_ff.bind @
 
   _makeSlider: (container) ->
     @_timeSlider = L.DomUtil.create 'input', 'time-slider', container
@@ -242,6 +256,20 @@ L.Timeline.TimeSliderControl = L.Control.extend
           return if prevDiff < nextDiff then prevDiff else nextDiff
       lastTime = time
     lastTime
+
+  _rev: ->
+    @_pause()
+    @_timeSlider.value = +@_timeSlider.value - @smallStepSize
+    @_sliderChanged
+      type: 'change'
+      target: value: @_timeSlider.value
+
+  _ff: ->
+    @_pause()
+    @_timeSlider.value = +@_timeSlider.value + @smallStepSize
+    @_sliderChanged
+      type: 'change'
+      target: value: @_timeSlider.value
 
   _prev: ->
     @_pause()
@@ -284,13 +312,15 @@ L.Timeline.TimeSliderControl = L.Control.extend
                     'leaflet-control-layers-expanded ' +
                     'leaflet-timeline-controls'
     if @timeline.options.enablePlayback
-      buttonContainer = L.DomUtil.create 'div', 'button-container', container
+      sliderCtrlC = L.DomUtil.create 'div', 'sldr-ctrl-container', container
+      buttonContainer = L.DomUtil.create 'div', 'button-container', sliderCtrlC
       @_makePlayPause buttonContainer
       @_makePrevNext buttonContainer
     @_makeSlider container
+    @_makeRevff container
+    @_makeOutput sliderCtrlC
     if @showTicks
       @_buildDataList container, @timeline.times
-    @_makeOutput container
     @timeline.setTime @start
     @container = container
 
