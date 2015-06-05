@@ -256,7 +256,7 @@ L.Timeline.TimeSliderControl = L.Control.extend
   _play: ->
     clearTimeout @_timer
     if +@_timeSlider.value == @end then @_timeSlider.value = @start
-    @_timeSlider.stepUp @stepSize
+    @_timeSlider.value = +@_timeSlider.value + @stepSize
     @_sliderChanged
       type: 'change'
       target: value: @_timeSlider.value
