@@ -45,7 +45,7 @@ class IntervalTree
     if node == undefined
       node = @_root
       @_list = []
-    if node == null or node.max < value then return
+    if node == null or node.max < value then return []
     if node.left != null then @lookup value, node.left
     if node.low <= value
       if node.high >= value then @_list.push node.data
@@ -163,7 +163,7 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @showTicks = @timeline.options.showTicks
     @stepDuration = @timeline.options.duration / @timeline.options.steps
     @stepSize = ( @end - @start ) / @timeline.options.steps
-    
+
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
     datalistSelect = L.DomUtil.create 'select', '', @_datalist
@@ -241,7 +241,7 @@ L.Timeline.TimeSliderControl = L.Control.extend
     clearTimeout @_timer
     if +@_timeSlider.value == @end then @_timeSlider.value = @start
     @_timeSlider.stepUp @stepSize
-    @_sliderChanged 
+    @_sliderChanged
       type: 'change'
       target: value: @_timeSlider.value
     unless +@_timeSlider.value == @end
