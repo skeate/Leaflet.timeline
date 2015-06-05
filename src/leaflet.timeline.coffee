@@ -70,19 +70,29 @@ L.Timeline = L.GeoJSON.extend
     L.GeoJSON.prototype.initialize.call this, undefined, options
     L.extend @options, options
     @ranges = new IntervalTree()
-    @process timedGeoJSON
+    if options.intervaFromFeature?
+      @intervaFromFeature = options.intervaFromFeature.bind(this)
+    if options.addData?
+      @addData = options.addData.bind(this)
+    if options.doSetTime?
+      @doSetTime = options.doSetTime.bind(this)
+    @process timedGeoJSON if timedGeoJSON?
+
+  intervaFromFeature: (feature) ->
+    start = ( new Date feature.properties.start ).getTime()
+    end = ( new Date feature.properties.end ).getTime()
+    return [start, end]
 
   process: (data) ->
     earliestStart = Infinity
     latestEnd = -Infinity
     data.features.forEach (feature) =>
-      start = ( new Date feature.properties.start ).getTime()
-      end = ( new Date feature.properties.end ).getTime()
-      @ranges.insert start, end, feature
-      @times.push start
-      @times.push end
-      if start < earliestStart then earliestStart = start
-      if end > latestEnd then latestEnd = end
+      interval = @intervaFromFeature(feature)
+      @ranges.insert interval[0], interval[1], feature
+      @times.push interval[0]
+      @times.push interval[1]
+      if interval[0] < earliestStart then earliestStart = interval[0]
+      if interval[1] > latestEnd then latestEnd = interval[1]
     @times = @times.sort()
     if not @options.start then @options.start = earliestStart
     if not @options.end then @options.end = latestEnd
@@ -97,6 +107,9 @@ L.Timeline = L.GeoJSON.extend
         if feature.geometries or feature.geometry or feature.features or feature.coordinates
           @addData feature
       return @
+    @_addData(geojson)
+
+  _addData: (geojson) ->
     options = @options
     if options.filter and !options.filter(geojson) then return
     layer = L.GeoJSON.geometryToLayer geojson, options.pointToLayer
@@ -120,6 +133,10 @@ L.Timeline = L.GeoJSON.extend
 
   setTime: (time) ->
     @time = (new Date time).getTime()
+    @doSetTime(time)
+    @fire 'change'
+
+  doSetTime: (time) ->
     ranges = @ranges.lookup time
     # inline the JS below because messing with indices
     # and that's ugly in CS
@@ -145,7 +162,6 @@ L.Timeline = L.GeoJSON.extend
     `
     for range in ranges
       @addData range
-    @fire 'change'
 
   onAdd: (map) ->
     L.GeoJSON.prototype.onAdd.call this, map
