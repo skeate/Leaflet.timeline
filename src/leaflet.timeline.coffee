@@ -70,15 +70,15 @@ L.Timeline = L.GeoJSON.extend
     L.GeoJSON.prototype.initialize.call this, undefined, options
     L.extend @options, options
     @ranges = new IntervalTree()
-    if options.intervaFromFeature?
-      @intervaFromFeature = options.intervaFromFeature.bind(this)
+    if options.intervalFromFeature?
+      @intervalFromFeature = options.intervalFromFeature.bind(this)
     if options.addData?
       @addData = options.addData.bind(this)
     if options.doSetTime?
       @doSetTime = options.doSetTime.bind(this)
     @process timedGeoJSON if timedGeoJSON?
 
-  intervaFromFeature: (feature) ->
+  intervalFromFeature: (feature) ->
     start = ( new Date feature.properties.start ).getTime()
     end = ( new Date feature.properties.end ).getTime()
     return [start, end]
@@ -87,7 +87,7 @@ L.Timeline = L.GeoJSON.extend
     earliestStart = Infinity
     latestEnd = -Infinity
     data.features.forEach (feature) =>
-      interval = @intervaFromFeature(feature)
+      interval = @intervalFromFeature(feature)
       @ranges.insert interval[0], interval[1], feature
       @times.push interval[0]
       @times.push interval[1]
