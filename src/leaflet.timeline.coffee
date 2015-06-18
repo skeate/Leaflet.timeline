@@ -79,21 +79,19 @@ L.Timeline = L.GeoJSON.extend
     @process timedGeoJSON if timedGeoJSON?
 
   intervalFromFeature: (feature) ->
-    start = ( new Date feature.properties.start ).getTime()
-    end = ( new Date feature.properties.end ).getTime()
-    return [start, end]
+    start: ( new Date feature.properties.start ).getTime()
+    end: ( new Date feature.properties.end ).getTime()
 
   process: (data) ->
     earliestStart = Infinity
     latestEnd = -Infinity
     data.features.forEach (feature) =>
       interval = @intervalFromFeature(feature)
-      @ranges.insert interval[0], interval[1], feature
-      @times.push interval[0]
-      @times.push interval[1]
-      if interval[0] < earliestStart then earliestStart = interval[0]
-      if interval[1] > latestEnd then latestEnd = interval[1]
-    @times = @times.sort()
+      @ranges.insert interval.start, interval.end, feature
+      @times.push interval.start
+      @times.push interval.end
+      if interval.start < earliestStart then earliestStart = interval.start
+      if interval.end > latestEnd then latestEnd = interval.end
     if not @options.start then @options.start = earliestStart
     if not @options.end then @options.end = latestEnd
 
