@@ -3,12 +3,12 @@ Leaflet.timeline
 
 Show any arbitrary GeoJSON objects changing over time
 
-(c) 2014 Jonathan Skeate
+(c) 2014-15 Jonathan Skeate
 https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.3.2'
+L.TimelineVersion = '0.4.0'
 
 # better range lookup performance.
 # http://jsperf.com/range-lookup-algorithm-comparison
@@ -70,30 +70,34 @@ L.Timeline = L.GeoJSON.extend
     L.GeoJSON.prototype.initialize.call this, undefined, options
     L.extend @options, options
     @ranges = new IntervalTree()
-    if options.intervaFromFeature?
-      @intervaFromFeature = options.intervaFromFeature.bind(this)
+    if options.intervalFromFeature?
+      @intervalFromFeature = options.intervalFromFeature.bind(this)
     if options.addData?
       @addData = options.addData.bind(this)
     if options.doSetTime?
       @doSetTime = options.doSetTime.bind(this)
     @process timedGeoJSON if timedGeoJSON?
 
-  intervaFromFeature: (feature) ->
-    start = ( new Date feature.properties.start ).getTime()
-    end = ( new Date feature.properties.end ).getTime()
-    return [start, end]
+  intervalFromFeature: (feature) ->
+    start: ( new Date feature.properties.start ).getTime()
+    end: ( new Date feature.properties.end ).getTime()
 
   process: (data) ->
     earliestStart = Infinity
     latestEnd = -Infinity
     data.features.forEach (feature) =>
-      interval = @intervaFromFeature(feature)
-      @ranges.insert interval[0], interval[1], feature
-      @times.push interval[0]
-      @times.push interval[1]
-      if interval[0] < earliestStart then earliestStart = interval[0]
-      if interval[1] > latestEnd then latestEnd = interval[1]
-    @times = @times.sort()
+      interval = @intervalFromFeature(feature)
+      @ranges.insert interval.start, interval.end, feature
+      @times.push interval.start
+      @times.push interval.end
+      if interval.start < earliestStart then earliestStart = interval.start
+      if interval.end > latestEnd then latestEnd = interval.end
+    @times = @times.sort (a, b) -> a - b
+    @times = @times.reduce((newList, x) ->
+      if newList[newList.length - 1] != x
+        newList.push x
+      return newList
+    , [])
     if not @options.start then @options.start = earliestStart
     if not @options.end then @options.end = latestEnd
 
@@ -180,17 +184,13 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @showTicks = @timeline.options.showTicks
     @stepDuration = @timeline.options.duration / @timeline.options.steps
     @stepSize = ( @end - @start ) / @timeline.options.steps
-    @smallStepSize = @timeline.options.smallstepsize or @stepSize / 10
 
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
     datalistSelect = L.DomUtil.create 'select', '', @_datalist
-    used_times = []
     times.forEach (time) ->
-      if used_times[time] then return
       datalistOption = L.DomUtil.create 'option', '', datalistSelect
       datalistOption.value = time
-      used_times[time] = true
     @_datalist.id = "timeline-datalist-" + Math.floor( Math.random() * 1000000 )
     @_timeSlider.setAttribute 'list', @_datalist.id
 
@@ -211,18 +211,6 @@ L.Timeline.TimeSliderControl = L.Control.extend
     L.DomEvent.disableClickPropagation @_nextButton
     @_prevButton.addEventListener 'click', @_prev.bind @
     @_nextButton.addEventListener 'click', @_next.bind @
-
-  _makeRevff: (container) ->
-    @_revButton = L.DomUtil.create 'button', 'rev'
-    @_ffButton = L.DomUtil.create 'button', 'ff'
-    @_revButton.innerHTML = '<'
-    @_ffButton.innerHTML = '>'
-    @_playButton.parentNode.insertBefore @_revButton, @_prevButton
-    @_playButton.parentNode.insertBefore @_ffButton, @_nextButton.nextSibling
-    L.DomEvent.disableClickPropagation @_revButton
-    L.DomEvent.disableClickPropagation @_ffButton
-    @_revButton.addEventListener 'mousedown', @_rev.bind @
-    @_ffButton.addEventListener 'mousedown', @_ff.bind @
 
   _makeSlider: (container) ->
     @_timeSlider = L.DomUtil.create 'input', 'time-slider', container
@@ -256,20 +244,6 @@ L.Timeline.TimeSliderControl = L.Control.extend
           return if prevDiff < nextDiff then prevDiff else nextDiff
       lastTime = time
     lastTime
-
-  _rev: ->
-    @_pause()
-    @_timeSlider.value = +@_timeSlider.value - @smallStepSize
-    @_sliderChanged
-      type: 'change'
-      target: value: @_timeSlider.value
-
-  _ff: ->
-    @_pause()
-    @_timeSlider.value = +@_timeSlider.value + @smallStepSize
-    @_sliderChanged
-      type: 'change'
-      target: value: @_timeSlider.value
 
   _prev: ->
     @_pause()
@@ -317,7 +291,6 @@ L.Timeline.TimeSliderControl = L.Control.extend
       @_makePlayPause buttonContainer
       @_makePrevNext buttonContainer
     @_makeSlider container
-    @_makeRevff container
     @_makeOutput sliderCtrlC
     if @showTicks
       @_buildDataList container, @timeline.times
