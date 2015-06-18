@@ -180,7 +180,7 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @showTicks = @timeline.options.showTicks
     @stepDuration = @timeline.options.duration / @timeline.options.steps
     @stepSize = ( @end - @start ) / @timeline.options.steps
-    @smallStepSize = @timeline.options.smallstepsize or @stepSize / 10
+    @smallStepSize = @timeline.options.smallStepSize or @stepSize / 10
 
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
