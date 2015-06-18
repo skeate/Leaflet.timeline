@@ -3,12 +3,12 @@ Leaflet.timeline
 
 Show any arbitrary GeoJSON objects changing over time
 
-(c) 2014 Jonathan Skeate
+(c) 2014-15 Jonathan Skeate
 https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.3.2'
+L.TimelineVersion = '0.4.0'
 
 # better range lookup performance.
 # http://jsperf.com/range-lookup-algorithm-comparison
