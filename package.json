@@ -4,7 +4,7 @@
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "coffee -o dist -c src/leaflet.timeline.coffee && node-sass -o dist src/leaflet.timeline.sass"
+    "prepublish": "grunt dist"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,12 @@
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
     "coffee-script": "^1.8.0",
-    "node-sass": "^2.0.0-beta"
+    "coffeelint": "^1.10.1",
+    "grunt": "^0.4.5",
+    "grunt-coffeelint": "0.0.13",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-sass": "^1.0.0",
+    "load-grunt-tasks": "^3.2.0"
   }
 }
