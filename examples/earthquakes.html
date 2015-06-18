@@ -98,7 +98,7 @@
               radius: data.properties.mag * 3,
               color: "hsl("+hue+", 100%, 50%)",
               fillColor: "hsl("+hue+", 100%, 50%)"
-            });
+            }).bindPopup('<a href="'+data.properties.url+'">click for more info</a>');
           }
         });
         timeline.addTo(map);
