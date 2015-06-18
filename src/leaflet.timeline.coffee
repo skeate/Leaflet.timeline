@@ -92,6 +92,12 @@ L.Timeline = L.GeoJSON.extend
       @times.push interval.end
       if interval.start < earliestStart then earliestStart = interval.start
       if interval.end > latestEnd then latestEnd = interval.end
+    @times = @times.sort (a, b) -> a - b
+    @times = @times.reduce((newList, x) ->
+      if newList[newList.length - 1] != x
+        newList.push x
+      return newList
+    , [])
     if not @options.start then @options.start = earliestStart
     if not @options.end then @options.end = latestEnd
 
@@ -182,12 +188,9 @@ L.Timeline.TimeSliderControl = L.Control.extend
   _buildDataList: (container, times) ->
     @_datalist = L.DomUtil.create 'datalist', '', container
     datalistSelect = L.DomUtil.create 'select', '', @_datalist
-    used_times = []
     times.forEach (time) ->
-      if used_times[time] then return
       datalistOption = L.DomUtil.create 'option', '', datalistSelect
       datalistOption.value = time
-      used_times[time] = true
     @_datalist.id = "timeline-datalist-" + Math.floor( Math.random() * 1000000 )
     @_timeSlider.setAttribute 'list', @_datalist.id
 
