@@ -249,7 +249,9 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @_pause()
     prevTime = @_nearestEventTime @timeline.time, -1
     @_timeSlider.value = prevTime
-    @timeline.setTime prevTime
+    @_sliderChanged
+      type: 'change'
+      target: value: prevTime
 
   _pause: ->
     clearTimeout @_timer
@@ -272,7 +274,9 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @_pause()
     nextTime = @_nearestEventTime @timeline.time, 1
     @_timeSlider.value = nextTime
-    @timeline.setTime nextTime
+    @_sliderChanged
+      type: 'change'
+      target: value: nextTime
 
   _sliderChanged: (e) ->
     time = +e.target.value
