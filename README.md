@@ -88,7 +88,7 @@ formatting the timestamp, but hey, you can do whatever you want.
 Show playback controls (i.e. prev/play/pause/next).
 
 ### `enableKeyboardControls`
-*default: `true`*
+*default: `false`*
 
 Allow playback to be controlled using the spacebar (play/pause) and
 right/left arrow keys (next/previous).

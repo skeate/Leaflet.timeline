@@ -62,7 +62,7 @@ L.Timeline = L.GeoJSON.extend
     position: "bottomleft"
     formatDate: (date) -> ""
     enablePlayback: true
-    enableKeyboardControls: true
+    enableKeyboardControls: false
     steps: 1000
     duration: 10000
     showTicks: true
