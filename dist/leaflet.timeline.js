@@ -87,6 +87,7 @@ http://leafletjs.com
         return "";
       },
       enablePlayback: true,
+      enableKeyboardControls: false,
       steps: 1000,
       duration: 10000,
       showTicks: true,
@@ -306,6 +307,29 @@ http://leafletjs.com
       this._output = L.DomUtil.create('output', 'time-text', container);
       return this._output.innerHTML = this.timeline.options.formatDate(new Date(this.start));
     },
+    _addKeyListeners: function() {
+      this._listener = this._onKeydown.bind(this);
+      return document.addEventListener('keydown', this._listener);
+    },
+    _removeKeyListeners: function() {
+      return document.removeEventListener('keydown', this._listener);
+    },
+    _onKeydown: function(e) {
+      switch (e.keyCode || e.which) {
+        case 37:
+          this._prev();
+          break;
+        case 39:
+          this._next();
+          break;
+        case 32:
+          this._toggle();
+          break;
+        default:
+          return;
+      }
+      return e.preventDefault();
+    },
     _nearestEventTime: function(findTime, mode) {
       var i, lastTime, len, nextDiff, prevDiff, ref, retNext, time;
       if (mode == null) {
@@ -342,15 +366,28 @@ http://leafletjs.com
       }
       return lastTime;
     },
+    _toggle: function() {
+      if (this._playing) {
+        return this._pause();
+      } else {
+        return this._play();
+      }
+    },
     _prev: function() {
       var prevTime;
       this._pause();
       prevTime = this._nearestEventTime(this.timeline.time, -1);
       this._timeSlider.value = prevTime;
-      return this.timeline.setTime(prevTime);
+      return this._sliderChanged({
+        type: 'change',
+        target: {
+          value: prevTime
+        }
+      });
     },
     _pause: function() {
       clearTimeout(this._timer);
+      this._playing = false;
       return this.container.classList.remove('playing');
     },
     _play: function() {
@@ -366,9 +403,11 @@ http://leafletjs.com
         }
       });
       if (+this._timeSlider.value !== this.end) {
+        this._playing = true;
         this.container.classList.add('playing');
         return this._timer = setTimeout(this._play.bind(this, this.stepDuration));
       } else {
+        this._playing = false;
         return this.container.classList.remove('playing');
       }
     },
@@ -377,7 +416,12 @@ http://leafletjs.com
       this._pause();
       nextTime = this._nearestEventTime(this.timeline.time, 1);
       this._timeSlider.value = nextTime;
-      return this.timeline.setTime(nextTime);
+      return this._sliderChanged({
+        type: 'change',
+        target: {
+          value: nextTime
+        }
+      });
     },
     _sliderChanged: function(e) {
       var time;
@@ -396,6 +440,9 @@ http://leafletjs.com
         buttonContainer = L.DomUtil.create('div', 'button-container', sliderCtrlC);
         this._makePlayPause(buttonContainer);
         this._makePrevNext(buttonContainer);
+        if (this.timeline.options.enableKeyboardControls) {
+          this._addKeyListeners();
+        }
       }
       this._makeSlider(container);
       this._makeOutput(sliderCtrlC);
@@ -404,6 +451,11 @@ http://leafletjs.com
       }
       this.timeline.setTime(this.start);
       return this.container = container;
+    },
+    onRemove: function() {
+      if (this.timeline.options.enableKeyboardControls) {
+        return this._removeKeyListeners();
+      }
     }
   });
 
