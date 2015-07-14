@@ -12,7 +12,7 @@ http://leafletjs.com
 (function() {
   var IntervalTree;
 
-  L.TimelineVersion = '0.4.0';
+  L.TimelineVersion = '0.4.1';
 
   IntervalTree = (function() {
     function IntervalTree() {
@@ -166,12 +166,18 @@ http://leafletjs.com
       return this._addData(geojson);
     },
     _addData: function(geojson) {
-      var layer, options;
+      var a, b, c, d, e, layer, major, meta, minor, options, patch, prerelease, ref, semver;
       options = this.options;
       if (options.filter && !options.filter(geojson)) {
         return;
       }
-      layer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer);
+      semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/;
+      ref = semver.exec(L.version), a = ref[0], major = ref[1], b = ref[2], minor = ref[3], c = ref[4], patch = ref[5], d = ref[6], prerelease = ref[7], e = ref[8], meta = ref[9];
+      if (major === 0 && minor <= 7) {
+        layer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer);
+      } else {
+        layer = L.GeoJSON.geometryToLayer(geojson, options);
+      }
       this.displayedLayers.push({
         layer: layer,
         geoJSON: geojson
