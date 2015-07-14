@@ -8,7 +8,7 @@ https://github.com/skeate/Leaflet.timeline
 http://leafletjs.com
 ###
 
-L.TimelineVersion = '0.4.0'
+L.TimelineVersion = '0.4.1'
 
 # better range lookup performance.
 # http://jsperf.com/range-lookup-algorithm-comparison
@@ -117,7 +117,12 @@ L.Timeline = L.GeoJSON.extend
   _addData: (geojson) ->
     options = @options
     if options.filter and !options.filter(geojson) then return
-    layer = L.GeoJSON.geometryToLayer geojson, options.pointToLayer
+    semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/
+    [a, major, b, minor, c, patch, d, prerelease, e, meta] = semver.exec L.version
+    if major == 0 and minor <= 7
+      layer = L.GeoJSON.geometryToLayer geojson, options.pointToLayer
+    else
+      layer = L.GeoJSON.geometryToLayer geojson, options
     # timeline custom bit here
     @displayedLayers.push
       layer: layer
