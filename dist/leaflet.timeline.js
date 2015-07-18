@@ -237,6 +237,10 @@ http://leafletjs.com
       this.timeSliderControl = L.Timeline.timeSliderControl(this);
       return this.timeSliderControl.addTo(map);
     },
+    onRemove: function(map) {
+      L.GeoJSON.prototype.onRemove.call(this, map);
+      return this.timeSliderControl.removeFrom(map);
+    },
     getDisplayed: function() {
       return this.ranges.lookup(this.time);
     }

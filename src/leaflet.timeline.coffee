@@ -179,6 +179,10 @@ L.Timeline = L.GeoJSON.extend
     @timeSliderControl = L.Timeline.timeSliderControl this
     @timeSliderControl.addTo map
 
+  onRemove: (map) ->
+    L.GeoJSON.prototype.onRemove.call this, map
+    @timeSliderControl.removeFrom map
+
   getDisplayed: -> @ranges.lookup @time
 
 
