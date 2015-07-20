@@ -12,7 +12,7 @@ http://leafletjs.com
 (function() {
   var IntervalTree;
 
-  L.TimelineVersion = '0.4.1';
+  L.TimelineVersion = '0.4.2';
 
   IntervalTree = (function() {
     function IntervalTree() {
@@ -173,7 +173,7 @@ http://leafletjs.com
       }
       semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/;
       ref = semver.exec(L.version), a = ref[0], major = ref[1], b = ref[2], minor = ref[3], c = ref[4], patch = ref[5], d = ref[6], prerelease = ref[7], e = ref[8], meta = ref[9];
-      if (major === 0 && minor <= 7) {
+      if (parseInt(major) === 0 && parseInt(minor) <= 7) {
         layer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer);
       } else {
         layer = L.GeoJSON.geometryToLayer(geojson, options);
