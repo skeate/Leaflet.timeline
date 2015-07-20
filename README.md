@@ -1,4 +1,4 @@
-# Leaflet.timeline 0.3.2
+# Leaflet.timeline 0.4.1
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -6,6 +6,29 @@ If you want smooth motion of markers from point to point, this is not your
 plugin. Please check out [LeafletPlayback][], or for real-time data, try
 [Leaflet Realtime][], both plugins from which I may or may not have pilfered
 some ideas.
+
+
+## Examples
+
+### [Earthquakes][1]
+
+USGS provides [GeoJSON(P) files][2] with earthquake data, including time and
+magnitude. For this example, that data is read, parsed to the right format
+(`start` and `end` values in the GeoJSON `properties`), and added to a
+`Leaflet.timeline`.
+
+### [Country borders after WWII][3]
+
+I found some historical country border data [here][4], though unfortunately
+it was not in GeoJSON. I converted it with [ogr2ogr][5]:
+
+    $ ogr2ogr -f "GeoJSON" \
+      -select CNTRY_NAME,COWSYEAR,COWSMONTH,COWSDAY,COWEYEAR,COWEMONTH,COWEDAY \
+      borders.json cshapes.shp
+
+then wrangled the data into the right format (examples/borders-parse.js). After
+that, it was just a matter of passing the data to `Leaflet.timeline` and letting
+it handle everything.
 
 ## Usage
 
@@ -64,6 +87,12 @@ formatting the timestamp, but hey, you can do whatever you want.
 
 Show playback controls (i.e. prev/play/pause/next).
 
+### `enableKeyboardControls`
+*default: `false`*
+
+Allow playback to be controlled using the spacebar (play/pause) and
+right/left arrow keys (next/previous).
+
 #### `steps`
 *default: 1000*
 
@@ -90,6 +119,12 @@ Wait until the user is finished changing the date to update the map. By default,
 both the map and the date update for every change. With complex data, this can
 slow things down, so set this to true to only update the displayed date.
 
+#### `intervalFromFeature`
+
+A function that should, given a feature, return an object with `start` and `end`
+properties, representing the start time and end time of the feature. By default
+it will use `feature.properties.start` and `feature.properties.end`.
+
 ## Events
 
 #### `change`
@@ -106,29 +141,20 @@ you throw at it.
 Returns the original GeoJSON of the features that are currently being displayed
 on the map.
 
-## Examples
-
-### Earthquakes
-
-[Example here][1]. USGS provides [GeoJSON(P) files][2] with earthquake data,
-including time and magnitude. For this example, that data is read, parsed to the
-right format (`start` and `end` values in the GeoJSON `properties`), and added
-to a `Leaflet.timeline`.
-
-
-### Country borders after WWII
-
-[Example here][3]. I found some historical country border data [here][4], though
-unfortunately it was not in GeoJSON. Converted it with [ogr2ogr][5]:
-
-    $ ogr2ogr -f "GeoJSON" \
-      -select CNTRY_NAME,COWSYEAR,COWSMONTH,COWSDAY,COWEYEAR,COWEMONTH,COWEDAY \
-      borders.json cshapes.shp
-
-Then wrangled the data into the right format (examples/borders-parse.js). After
-that, just pass the data to `Leaflet.timeline` and let it handle everything.
-
 ## Change log
+
+### 0.4.1
+- Fixed an issue where removing the L.timeline would not remove the control
+
+### 0.4.0
+- Fixed an issue where too wide of a range of dates would case playback to go
+  backwards
+- Added options to pass in methods to handle the data, so you can use a different
+  format if you want
+- Added a grunt build pipeline (thanks to @vencax for this and the two changes above)
+- Fixed a bug where next/previous buttons wouldn't work as expected if input
+  wasn't sorted (.. by sorting the input)
+
 
 ### 0.3.0
 - Fixed Pause button not turning back into Play button on playback completion

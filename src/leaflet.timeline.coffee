@@ -62,6 +62,7 @@ L.Timeline = L.GeoJSON.extend
     position: "bottomleft"
     formatDate: (date) -> ""
     enablePlayback: true
+    enableKeyboardControls: false
     steps: 1000
     duration: 10000
     showTicks: true
@@ -178,6 +179,10 @@ L.Timeline = L.GeoJSON.extend
     @timeSliderControl = L.Timeline.timeSliderControl this
     @timeSliderControl.addTo map
 
+  onRemove: (map) ->
+    L.GeoJSON.prototype.onRemove.call this, map
+    @timeSliderControl.removeFrom map
+
   getDisplayed: -> @ranges.lookup @time
 
 
@@ -232,6 +237,21 @@ L.Timeline.TimeSliderControl = L.Control.extend
     @_output = L.DomUtil.create 'output', 'time-text', container
     @_output.innerHTML = @timeline.options.formatDate new Date @start
 
+  _addKeyListeners: ->
+    @_listener = @_onKeydown.bind @
+    document.addEventListener 'keydown', @_listener
+
+  _removeKeyListeners: ->
+    document.removeEventListener 'keydown', @_listener
+
+  _onKeydown: (e) ->
+    switch e.keyCode or e.which
+      when 37 then @_prev()
+      when 39 then @_next()
+      when 32 then @_toggle()
+      else return
+    e.preventDefault()
+
   _nearestEventTime: (findTime, mode=0) ->
     retNext = false
     lastTime = @timeline.times[0]
@@ -250,14 +270,20 @@ L.Timeline.TimeSliderControl = L.Control.extend
       lastTime = time
     lastTime
 
+  _toggle: ->
+    if @_playing then @_pause() else @_play()
+
   _prev: ->
     @_pause()
     prevTime = @_nearestEventTime @timeline.time, -1
     @_timeSlider.value = prevTime
-    @timeline.setTime prevTime
+    @_sliderChanged
+      type: 'change'
+      target: value: prevTime
 
   _pause: ->
     clearTimeout @_timer
+    @_playing = false
     @container.classList.remove 'playing'
 
   _play: ->
@@ -268,16 +294,20 @@ L.Timeline.TimeSliderControl = L.Control.extend
       type: 'change'
       target: value: @_timeSlider.value
     unless +@_timeSlider.value == @end
+      @_playing = true
       @container.classList.add 'playing'
       @_timer = setTimeout @_play.bind @, @stepDuration
     else
+      @_playing = false
       @container.classList.remove 'playing'
 
   _next: ->
     @_pause()
     nextTime = @_nearestEventTime @timeline.time, 1
     @_timeSlider.value = nextTime
-    @timeline.setTime nextTime
+    @_sliderChanged
+      type: 'change'
+      target: value: nextTime
 
   _sliderChanged: (e) ->
     time = +e.target.value
@@ -295,12 +325,18 @@ L.Timeline.TimeSliderControl = L.Control.extend
       buttonContainer = L.DomUtil.create 'div', 'button-container', sliderCtrlC
       @_makePlayPause buttonContainer
       @_makePrevNext buttonContainer
+      if @timeline.options.enableKeyboardControls
+        @_addKeyListeners()
     @_makeSlider container
     @_makeOutput sliderCtrlC
     if @showTicks
       @_buildDataList container, @timeline.times
     @timeline.setTime @start
     @container = container
+
+  onRemove: () ->
+    if @timeline.options.enableKeyboardControls
+      @_removeKeyListeners()
 
 L.timeline = (timedGeoJSON, options) -> new L.Timeline timedGeoJSON, options
 L.Timeline.timeSliderControl = (timeline, start, end, timelist) ->
