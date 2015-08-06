@@ -11,7 +11,7 @@
     "timeline",
     "geojson"
   ],
-  "license": "MIT",
+  "license": "ISC",
   "homepage": "http://github.com/skeate/Leaflet.timeline",
   "ignore": [
     "**/.*",
