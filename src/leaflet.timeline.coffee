@@ -68,6 +68,7 @@ L.Timeline = L.GeoJSON.extend
     showTicks: true
     waitToUpdateMap: false
   initialize: (timedGeoJSON, options) ->
+    @times = []
     L.GeoJSON.prototype.initialize.call this, undefined, options
     L.extend @options, options
     @ranges = new IntervalTree()

@@ -3,8 +3,7 @@
   "version": "0.4.2",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "grunt dist"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "dist/leaflet.timeline.js",
   "repository": {
@@ -25,13 +24,11 @@
   },
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
-    "coffee-script": "^1.8.0",
-    "coffeelint": "^1.10.1",
-    "grunt": "^0.4.5",
-    "grunt-coffeelint": "0.0.13",
-    "grunt-contrib-coffee": "^0.13.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-sass": "^1.0.0",
-    "load-grunt-tasks": "^3.2.0"
+    "gulp": "^3.9.0",
+    "gulp-coffee": "^2.3.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglifycss": "^1.0.4"
   }
 }
