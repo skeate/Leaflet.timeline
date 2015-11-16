@@ -1,4 +1,4 @@
-# Leaflet.timeline 0.4.2
+# Leaflet.timeline 0.4.3
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -142,6 +142,9 @@ Returns the original GeoJSON of the features that are currently being displayed
 on the map.
 
 ## Change log
+
+### 0.4.3
+- Build tweaks
 
 ### 0.4.2
 - Fixed a version check issue

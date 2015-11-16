@@ -1,0 +1,9 @@
+node_modules
+bower_components
+gh-pages
+.sass-cache
+npm-debug.log
+examples
+src
+dist/leaflet.timeline.css
+dist/leaflet.timeline.js

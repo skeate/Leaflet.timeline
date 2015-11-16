@@ -1,9 +1,10 @@
 {
   "name": "leaflet.timeline",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "gulp min-build"
   },
   "main": "dist/leaflet.timeline.js",
   "repository": {
