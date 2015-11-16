@@ -1,5 +1,7 @@
 # Leaflet.timeline 0.4.3
 
+[![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Show any changing geospatial data over time, from points to polygons.
 
 If you want smooth motion of markers from point to point, this is not your
