@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "gulp min-build"
   },
-  "main": "dist/leaflet.timeline.js",
+  "main": "dist/leaflet.timeline.min.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/skeate/Leaflet.timeline.git"
