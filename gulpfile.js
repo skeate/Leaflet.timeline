@@ -5,6 +5,7 @@ var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
 var uglifycss = require('gulp-uglifycss');
 var rename = require('gulp-rename');
+var webserver = require('gulp-webserver');
 
 gulp.task('sass', function() {
   return gulp.src('src/*.sass')
@@ -38,6 +39,20 @@ gulp.task('js-min', function() {
     .pipe(gulp.dest('dist'))
 });
 
+gulp.task('webserver', function() {
+  return gulp.src('.')
+    .pipe(webserver({
+      livereload: true
+    }))
+});
+
+gulp.task('watch', function() {
+  gulp.watch('src/*.coffee', ['js'])
+  gulp.watch('src/*.sass', ['sass'])
+})
+
 gulp.task('default', ['sass', 'js']);
 
 gulp.task('min-build', ['sass-min', 'js-min']);
+
+gulp.task('start', ['default', 'webserver', 'watch']);
