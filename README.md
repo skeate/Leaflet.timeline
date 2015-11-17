@@ -143,6 +143,20 @@ you throw at it.
 Returns the original GeoJSON of the features that are currently being displayed
 on the map.
 
+## Contributing
+
+To get the project running locally, clone this repo and run these commands
+within the project folder:
+```
+npm install
+gulp start
+```
+Open your browser to http://localhost:8000/examples/borders.html or http://localhost:8000/examples/earthquakes.html
+
+The page will reload whenever file changes are made, so you can use the examples to test the changes you want to contribute to the project.
+
+Please create a pull request from your fork of the project, and provide details of the intent of the changes.
+
 ## Change log
 
 ### 0.4.3
