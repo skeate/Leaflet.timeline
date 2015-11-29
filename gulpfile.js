@@ -1,58 +1,34 @@
+/* eslint-disable */
 var gulp = require('gulp');
-var coffee = require('gulp-coffee');
-var sourcemaps = require('gulp-sourcemaps');
-var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
-var uglifycss = require('gulp-uglifycss');
-var rename = require('gulp-rename');
+var gutil = require('gulp-util');
 var webserver = require('gulp-webserver');
 
-gulp.task('sass', function() {
-  return gulp.src('src/*.sass')
-    .pipe(sourcemaps.init())
-      .pipe(sass())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'))
+var webpack = require('webpack');
+var WebpackDevServer = require('webpack-dev-server');
+var webpackConfig = require('./webpack.config');
+
+gulp.task('webpack', function(cb) {
+  webpack(webpackConfig, function(err, stats) {
+    if (err) throw new gutil.PluginError('webpack', err);
+    gutil.log('[webpack]', stats.toString({
+
+    }));
+    cb();
+  });
 });
 
-gulp.task('js', function() {
-  return gulp.src('src/*.coffee')
-    .pipe(sourcemaps.init())
-      .pipe(coffee())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'))
+gulp.task('webpack-dev-server', function(cb) {
+  var compiler = webpack(webpackConfig);
+
+  new WebpackDevServer(compiler, {
+
+  }).listen(8080, "localhost", function(err) {
+    if (err) throw new gutil.PluginError('webpack-dev-server', err);
+    gutil.log(
+      '[webpack-dev-server]',
+      'http://localhost:8080/webpack-dev-server/index.html'
+    );
+  });
 });
 
-gulp.task('sass-min', function() {
-  return gulp.src('src/*.sass')
-    .pipe(sass())
-    .pipe(uglifycss())
-    .pipe(rename('leaflet.timeline.min.css'))
-    .pipe(gulp.dest('dist'))
-});
-
-gulp.task('js-min', function() {
-  return gulp.src('src/*.coffee')
-    .pipe(coffee())
-    .pipe(uglify())
-    .pipe(rename('leaflet.timeline.min.js'))
-    .pipe(gulp.dest('dist'))
-});
-
-gulp.task('webserver', function() {
-  return gulp.src('.')
-    .pipe(webserver({
-      livereload: true
-    }))
-});
-
-gulp.task('watch', function() {
-  gulp.watch('src/*.coffee', ['js'])
-  gulp.watch('src/*.sass', ['sass'])
-})
-
-gulp.task('default', ['sass', 'js']);
-
-gulp.task('min-build', ['sass-min', 'js-min']);
-
-gulp.task('start', ['default', 'webserver', 'watch']);
+gulp.task('default', ['webpack']);

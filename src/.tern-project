@@ -1,0 +1,9 @@
+{
+  "libs": [
+    "browser",
+    "../defs/leaflet"
+  ],
+  "plugins": {
+    "es_modules": {}
+  }
+}

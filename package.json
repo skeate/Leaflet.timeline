@@ -1,6 +1,6 @@
 {
   "name": "leaflet.timeline",
-  "version": "0.4.3",
+  "version": "1.0.0-alpha.1",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,13 +26,18 @@
   },
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
+    "babel-core": "^6.2.1",
+    "babel-jest": "^6.0.1",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "css-loader": "^0.23.0",
+    "extract-text-webpack-plugin": "^0.9.1",
     "gulp": "^3.9.0",
-    "gulp-coffee": "^2.3.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.1.0",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-uglify": "^1.5.1",
-    "gulp-uglifycss": "^1.0.4",
-    "gulp-webserver": "^0.9.1"
+    "gulp-util": "^3.0.7",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
   }
 }
