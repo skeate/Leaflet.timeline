@@ -41,8 +41,11 @@ module.exports = function(config) {
     reporters: ['mocha', 'coverage'],
 
     coverageReporter: {
-      type: 'html',
-      dir: 'coverage/'
+      dir: 'coverage',
+      reporters: [
+        {type: 'html', subdir: 'report'},
+        {type: 'lcovonly', subdir: '.', file: 'lcov.info'}
+      ]
     },
 
     // web server port
