@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './src/leaflet.timeline.js',
+  entry: './src/index.js',
 
   output: {
     path: __dirname + '/dist',
