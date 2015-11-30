@@ -14,5 +14,10 @@ ratings:
   - "**.js"
   - "**.jsx"
 exclude_paths:
-- test/**/*
+- "test/**/*"
 - ".codeclimate.yml"
+- "dist/**/*"
+- "karma.conf.js"
+- "webpack.config.js"
+- "examples/**/*"
+- "defs/**/*"
