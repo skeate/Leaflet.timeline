@@ -1,0 +1,10 @@
+{
+  "libs": [
+    "browser",
+    "../defs/leaflet",
+    "chai"
+  ],
+  "plugins": {
+    "es_modules": {}
+  }
+}

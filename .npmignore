@@ -5,5 +5,4 @@ gh-pages
 npm-debug.log
 examples
 src
-dist/leaflet.timeline.css
-dist/leaflet.timeline.js
+coverage
