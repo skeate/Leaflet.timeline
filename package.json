@@ -6,8 +6,7 @@
     "build": "webpack",
     "test": "karma start --single-run",
     "test-watch": "karma start",
-    "prepublish": "npm run build",
-    "postinstall": "bower install"
+    "prepublish": "npm run build"
   },
   "main": "dist/leaflet.timeline.min.js",
   "repository": {
