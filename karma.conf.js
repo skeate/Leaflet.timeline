@@ -89,7 +89,12 @@ module.exports = function(config) {
           }
         ],
         loaders: [
-          { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
+          {
+            test: /\.js$/,
+            // don't want to compile node_modules -- other than the diesal lib.
+            exclude: /node_modules\/(^diesal)/,
+            loader: 'babel'
+          },
           {
             test: /\.sass$/,
             loader: ExtractTextPlugin.extract(

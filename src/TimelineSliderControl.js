@@ -31,7 +31,7 @@ L.TimelineSliderControl = L.Control.extend({
    * will be calculated automatically based on the timelines registered to this
    * control.
    */
-  initialize(options = {duration: 600000, showTicks: true}) {
+  initialize(options = {}) {
     const defaultOptions = {
       duration:               600000,
       enableKeyboardControls: false,

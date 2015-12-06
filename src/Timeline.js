@@ -3,104 +3,124 @@
 import IntervalTree from 'diesal/src/ds/IntervalTree';
 
 L.Timeline = L.GeoJSON.extend({
-  includes: L.Mixin.Events,
   times: [],
   displayedLayers: [],
-  ranges: [],
+  ranges: null,
 
-  options: {
-    position: 'bottomleft',
-    formatDate: () => '',
-    enablePlayback: true,
-    enableKeyboardControls: false,
-    steps: 1000,
-    duration: 1000,
-    showTicks: true,
-    waitToUpdateMap: false,
-  },
-
-  initialize(timedGeoJSON, options) {
-    this.times = [];
-    L.GeoJSON.prototype.initialize.call(this, null, options);
-    L.extend(this.options, options);
+  /**
+   * @constructor
+   * @param {Object} geojson The GeoJSON data for this layer
+   * @param {Object} options Hash of options
+   * @param {Function} [options.getInterval] A function which returns an object
+   * with `start` and `end` properties, called for each feature in the GeoJSON
+   * data.
+   * @param {Boolean} [options.drawOnSetTime=true] Make the layer draw as soon
+   * as `setTime` is called. If this is set to false, you will need to call
+   * `draw()` manually.
+   */
+  initialize(geojson, options = {}) {
+    // Some functionality was changed after Leaflet 0.7; some people use the
+    // latest stable, some use the beta. This should work either way, so we need
+    // a version check.
     this.ranges = new IntervalTree();
-    if (options.intervalFromFeature) {
-      this._intervalFromFeature = options.intervalFromFeature.bind(this);
+    const semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/;
+    const [, major,, minor] = semver.exec(L.version);
+    this.isOldVersion = parseInt(major, 10) === 0 && parseInt(minor, 10) <= 7;
+    const defaultOptions = {
+      drawOnSetTime: true,
+    };
+    L.GeoJSON.prototype.initialize.call(this, null, options);
+    L.Util.setOptions(this, defaultOptions);
+    L.Util.setOptions(this, options);
+    if (this.options.getInterval) {
+      this._getInterval = (...args) => this.options.getInterval(...args);
     }
-    if (options.addData) {
-      this.addData = options.addData.bind(this);
-    }
-    if (options.doSetTime) {
-      this.doSetTime = options.doSetTime.bind(this);
-    }
-    if (timedGeoJSON) {
-      this._process(timedGeoJSON);
+    if (geojson) {
+      this._process(geojson);
     }
   },
 
-  _intervalFromFeature(feature) {
+  _getInterval(feature) {
     return {
       start: new Date(feature.properties.start).getTime(),
       end: new Date(feature.properties.end).getTime(),
     };
   },
 
+  /**
+   * Finds the first and last times in the dataset, adds all times into an
+   * array, and puts everything into an IntervalTree for quick lookup.
+   *
+   * @param {Object} data GeoJSON to process
+   */
   _process(data) {
     // In case we don't have a manually set start or end time, we need to find
     // the extremes in the data. We can do that while we're inserting everything
     // into the interval tree.
-    let earliestStart = Infinity;
-    let latestEnd = -Infinity;
+    let start = Infinity;
+    let end = -Infinity;
     data.features.forEach((feature) => {
-      const interval = this._intervalFromFeature(feature);
+      const interval = this._getInterval(feature);
       this.ranges.insert(interval.start, interval.end, feature);
       this.times.push(interval.start);
       this.times.push(interval.end);
-      earliestStart = Math.min(earliestStart, interval.start);
-      latestEnd = Math.max(latestEnd, interval.end);
+      start = Math.min(start, interval.start);
+      end = Math.max(end, interval.end);
     });
-    this.options.start = this.options.start || earliestStart;
-    this.options.end = this.options.end || latestEnd;
-    this.times = this.times
+    this.start = this.options.start || start;
+    this.end = this.options.end || end;
+    this.time = this.start;
+    this._minGap = Infinity;
+    if (this.times.length === 0) {
+      return;
+    }
     // default sort is lexicographic, even for number types. so need to
     // specify sorting function.
-    .sort((a, b) => a - b)
+    this.times.sort((a, b) => a - b);
     // de-duplicate the times
-    .reduce((newList, x) => {
-      if (newList[newList.length - 1] !== x) {
+    this.times = this.times.reduce((newList, x, i) => {
+      if (i === 0) {
+        return newList;
+      }
+      const lastTime = newList[newList.length - 1];
+      if (lastTime !== x) {
+        this._minGap = Math.min(this._minGap, x - lastTime);
         newList.push(x);
       }
       return newList;
-    }, []);
+    }, [this.times[0]]);
   },
 
+  /**
+   * Overrides `L.GeoJSON`'s addData. Largely copy/paste (with some ES2015
+   * conversion), but the key difference is that this will also track the layers
+   * that have been added.
+   *
+   * @param {Object[]|Object} geojson A GeoJSON object or array of GeoJSON
+   * objects.
+   * @returns {L.Timeline} `this`
+   */
   addData(geojson) {
     const features = L.Util.isArray(geojson) ? geojson : geojson.features;
     if (features) {
       features
       .filter((f) => f.geometries || f.geometry || f.features || f.coordinates)
-      .forEach(this.addData.bind(this));
+      .forEach((feature) => this.addData(feature));
+      return this;
     }
-    else {
-      this._addData(geojson);
-    }
-  },
-
-  _addData(geojson) {
     if (this.options.filter && !this.options.filter(geojson)) {
-      return;
+      return this;
     }
-    // This was changed after Leaflet 0.7; some people use the latest stable,
-    // some use the beta.
-    const semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/;
-    const [, major,, minor] = semver.exec(L.version);
     const layer = L.GeoJSON.geometryToLayer(
       geojson,
-      (parseInt(major, 10) === 0 && parseInt(minor, 10) <= 7)
-      ? this.options.pointToLayer
-      : this.options
+      this.isOldVersion ? this.options.pointToLayer : this.options
     );
+    if (!layer) {
+      return this;
+    }
+    // *** this is the main custom part, here ***
     this.displayedLayers.push({layer, geoJSON: geojson});
+    // *** end custom bit. wasn't that useful? ***
     layer.feature = L.GeoJSON.asFeature(geojson);
     layer.defaultOptions = layer.options;
     this.resetStyle(layer);
@@ -110,6 +130,13 @@ L.Timeline = L.GeoJSON.extend({
     this.addLayer(layer);
   },
 
+  /**
+   * Removes a layer, optionally also removing it from the `displayedLayers`
+   * array.
+   *
+   * @param {L.Layer} layer The layer to remove
+   * @param {Boolean} [removeDisplayed] Also remove from `displayedLayers`
+   */
   removeLayer(layer, removeDisplayed = true) {
     L.GeoJSON.prototype.removeLayer.call(this, layer);
     if (removeDisplayed) {
@@ -119,21 +146,40 @@ L.Timeline = L.GeoJSON.extend({
     }
   },
 
+  /**
+   * Sets the time for this layer.
+   *
+   * @param {Number|String} time The time to set. Usually a number, but if your
+   * data is really time-based then you can pass a string (e.g. '2015-01-01')
+   * and it will be processed into a number automatically.
+   */
   setTime(time) {
-    this.time = new Date(time).getTime();
-    this.doSetTime(time);
+    this.time = typeof time === 'number' ? time : new Date(time).getTime();
+    if (this.options.drawOnSetTime) {
+      this.updateDisplayedLayers();
+    }
     this.fire('change');
   },
 
-  doSetTime(time) {
-    const ranges = this.ranges.lookup(time);
-    let i, j, found;
-    for (i = 0; i < this.displayedLayers.length; i++) {
-      found = false;
-      for (j = 0; j < ranges.length; j++) {
-        if (this.displayedLayers[i].geoJSON === ranges[j]) {
+  /**
+   * Update the layer to show only the features that are relevant at the current
+   * time. Usually shouldn't need to be called manually, unless you set
+   * `drawOnSetTime` to `false`.
+   */
+  updateDisplayedLayers() {
+    // This loop is intended to help optimize things a bit. First, we find all
+    // the features that should be displayed at the current time.
+    const features = this.ranges.lookup(this.time);
+    // Then we try to match each currently displayed layer up to a feature. If
+    // we find a match, then we remove it from the feature list. If we don't
+    // find a match, then the displayed layer is no longer valid at this time.
+    // We should remove it.
+    for (let i = 0; i < this.displayedLayers.length; i++) {
+      let found = false;
+      for (let j = 0; j < features.length; j++) {
+        if (this.displayedLayers[i].geoJSON === features[j]) {
           found = true;
-          ranges.splice(j, 1);
+          features.splice(j, 1);
           break;
         }
       }
@@ -142,23 +188,9 @@ L.Timeline = L.GeoJSON.extend({
         this.removeLayer(toRemove[0].layer, false);
       }
     }
-    ranges.forEach(this.addData.bind(this));
-  },
-
-  onAdd(map) {
-    L.GeoJSON.prototype.onAdd.call(this, map);
-    this.timeSliderControl = L.Timeline.timeSliderControl(this);
-    this.timeSliderControl.addTo(map);
-  },
-
-  onRemove(map) {
-    L.GeoJSON.prototype.onRemove.call(this, map);
-    this.timeSliderControl.removeFrom(map);
-  },
-
-  getDisplayed() {
-    return this.ranges.lookup(this.time);
+    // Finally, with any features left, they must be new data! We can add them.
+    features.forEach((feature) => this.addData(feature));
   },
 });
 
-L.timeline = (...args) => new L.Timeline(...args);
+L.timeline = (geojson, options) => new L.Timeline(geojson, options);
