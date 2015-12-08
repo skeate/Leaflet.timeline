@@ -189,6 +189,10 @@ L.Timeline = L.GeoJSON.extend({
     // Finally, with any features left, they must be new data! We can add them.
     features.forEach((feature) => this.addData(feature));
   },
+
+  getDisplayed() {
+    return this.displayedLayers.map((layer) => layer.geoJSON);
+  },
 });
 
 L.timeline = (geojson, options) => new L.Timeline(geojson, options);
