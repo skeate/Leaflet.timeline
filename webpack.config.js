@@ -3,11 +3,14 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    'leaflet.timeline': './src/index.js',
+    'leaflet.timeline.min': './src/index.js',
+  },
 
   output: {
     path: __dirname + '/dist',
-    filename: 'leaflet.timeline.min.js'
+    filename: '[name].js'
   },
 
   module: {
@@ -24,8 +27,14 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
-    new ExtractTextPlugin('leaflet.timeline.min.css')
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true,
+    }),
+    new ExtractTextPlugin('leaflet.timeline.min.css'),
+    new webpack.SourceMapDevToolPlugin({
+      exclude: /(\.min\.js|\.css)$/,
+    })
   ],
 
   sassLoader: {
