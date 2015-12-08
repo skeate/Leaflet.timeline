@@ -1,11 +1,10 @@
 <html>
   <head>
     <title>Leaflet.timeline</title>
-    <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
-    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
     <script src="../dist/leaflet.timeline.min.js"></script>
 
-    <link href="../bower_components/leaflet/dist/leaflet.css" rel="stylesheet">
+    <link href="../node_modules/leaflet/dist/leaflet.css" rel="stylesheet">
     <link href="../dist/leaflet.timeline.min.css" rel="stylesheet">
 
     <style>
@@ -66,6 +65,9 @@
         maxBounds: [[90,-180], [-90, 180]]
       });
 
+      // this is just used to show the currently-displayed earthquakes
+      // in the little sidebar. meant as an example of a use for the 'change'
+      // event
       function updateList(timeline){
         var displayed = timeline.getDisplayed();
         var list = document.getElementById('displayed-list');
@@ -77,19 +79,25 @@
         });
       }
 
+      // eqfeed_callback is called once the earthquake geojsonp file below loads
       function eqfeed_callback(data){
-        // wrangle data into format Leaflet.timeline expects
-        // earthquake data only has a time, so we'll use that as a "start"
-        // and the "end" will be that + some value based on magnitude
-        data.features.forEach(function(quake){
-          var time = quake.properties.time;
-          quake.properties.start = time;
-          quake.properties.end   = time + quake.properties.mag * 1800000;
+        var getInterval = function(quake) {
+          // earthquake data only has a time, so we'll use that as a "start"
+          // and the "end" will be that + some value based on magnitude
+          // 18000000 = 30 minutes, so a quake of magnitude 5 would show on the
+          // map for 150 minutes or 2.5 hours
+          return {
+            start: quake.properties.time,
+            end:   quake.properties.time + quake.properties.mag * 1800000
+          };
+        };
+        var timelineControl = L.timelineSliderControl({
+          formatOutput: function(date) {
+            return new Date(date).toString();
+          }
         });
         var timeline = L.timeline(data, {
-          formatDate: function(date){
-            return moment(date).format("YYYY-MM-DD HH:MM:SS");
-          },
+          getInterval: getInterval,
           pointToLayer: function(data, latlng){
             var hue_min = 120;
             var hue_max = 0;
@@ -101,6 +109,8 @@
             }).bindPopup('<a href="'+data.properties.url+'">click for more info</a>');
           }
         });
+        timelineControl.addTo(map);
+        timelineControl.addTimelines(timeline);
         timeline.addTo(map);
         timeline.on('change', function(e){
           updateList(e.target);

@@ -103,6 +103,7 @@ L.TimelineSliderControl = L.Control.extend({
     if (!manualStart) {
       this.start = min;
       this._timeSlider.min = min === Infinity ? 0 : min;
+      this._timeSlider.value = this._timeSlider.min;
     }
     if (!manualEnd) {
       this.end = max;
