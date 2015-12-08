@@ -33,13 +33,14 @@ L.TimelineSliderControl = L.Control.extend({
    */
   initialize(options = {}) {
     const defaultOptions = {
-      duration:               600000,
+      duration:               10000,
       enableKeyboardControls: false,
       enablePlayback:         true,
       formatOutput:           (output) => `${output || ''}`,
       showTicks:              true,
       waitToUpdateMap:        false,
       position:               'bottomleft',
+      steps:                  1000,
     };
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
@@ -91,16 +92,12 @@ L.TimelineSliderControl = L.Control.extend({
     const duration = this.options.duration;
     let min = Infinity;
     let max = -Infinity;
-    let minGap = Infinity;
     this.timelines.forEach((timeline) => {
       if (timeline.start < min) {
         min = timeline.start;
       }
       if (timeline.end > max) {
         max = timeline.end;
-      }
-      if (timeline._minGap < minGap) {
-        minGap = timeline._minGap;
       }
     });
     if (!manualStart) {
@@ -111,12 +108,8 @@ L.TimelineSliderControl = L.Control.extend({
       this.end = max;
       this._timeSlider.max = max === -Infinity ? 0 : max;
     }
-    this._stepSize = minGap;
-    const stepCount = (this.end - this.start) / this._stepSize;
-    if (stepCount > duration) {
-      this._stepSize = (this.end - this.start) / duration;
-    }
-    this._stepDuration = Math.max(1, duration / stepCount);
+    this._stepSize = Math.max(1, (this.end - this.start) / this.options.steps);
+    this._stepDuration = Math.max(1, duration / this.options.steps);
   },
 
   /**

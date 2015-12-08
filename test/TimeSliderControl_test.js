@@ -163,6 +163,7 @@ describe('TimeSliderControl', () => {
     it('should stop playback once it reaches the end', (done) => {
       const control = L.timelineSliderControl({
         duration: 5,
+        steps: 5,
       });
       control.addTo(map);
       control.addTimelines(fakeLayerA, fakeLayerB, fakeLayerA);

@@ -70,7 +70,6 @@ L.Timeline = L.GeoJSON.extend({
     this.start = this.options.start || start;
     this.end = this.options.end || end;
     this.time = this.start;
-    this._minGap = Infinity;
     if (this.times.length === 0) {
       return;
     }
@@ -84,7 +83,6 @@ L.Timeline = L.GeoJSON.extend({
       }
       const lastTime = newList[newList.length - 1];
       if (lastTime !== x) {
-        this._minGap = Math.min(this._minGap, x - lastTime);
         newList.push(x);
       }
       return newList;

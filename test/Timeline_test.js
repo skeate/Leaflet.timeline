@@ -76,7 +76,6 @@ describe('Timeline', () => {
     const layer = L.timeline(geojson);
     layer.start.should.equal(0);
     layer.end.should.equal(1420106400000);
-    layer._minGap.should.equal(473299200000);
     layer.start.should.equal(0);
   });
 
