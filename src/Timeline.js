@@ -16,7 +16,7 @@ L.Timeline = L.GeoJSON.extend({
    * data.
    * @param {Boolean} [options.drawOnSetTime=true] Make the layer draw as soon
    * as `setTime` is called. If this is set to false, you will need to call
-   * `draw()` manually.
+   * `updateDisplayedLayers()` manually.
    */
   initialize(geojson, options = {}) {
     // Some functionality was changed after Leaflet 0.7; some people use the

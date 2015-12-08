@@ -4,7 +4,7 @@
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Leaflet.timeline 0.4.3
+# Leaflet.timeline 1.0.0-beta
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -38,8 +38,12 @@ it handle everything.
 
 ## Usage
 
-`Leaflet.timeline` is a subclass of `L.GeoJSON`, so use it as you would that.
-The data you pass in should be something like this:
+There are actually two classes here. `L.Timeline` and `L.TimelineSliderControl`.
+
+### `L.Timeline`
+
+`L.Timeline` is a subclass of `L.GeoJSON`, so use it as you would that. The data
+you pass in should be something like this:
 
 ``` json
 {
@@ -57,33 +61,60 @@ The data you pass in should be something like this:
 }
 ```
 
-The date can really be anything `Date()` can process.
+Though you can also pass in a `getInterval` function to parse the data as you
+wish. (see below)
 
-It does add some extra options:
+The date can really be any numerical value -- if you're using this for timed
+data, a Unix timestamp (the ms version for easier JS usage) probably makes
+sense.
 
-## Options
+#### Options
 
 see also [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
 
-#### `start`
+##### `getInterval` (Function -- optional)
+
+This is a function which should return an object with `start` and `end`
+properties. By default it assumes a structure as above.
+
+##### `drawOnSetTime` (Boolean -- optional, default `true`)
+
+Make the layer draw as soon as `setTime` is called. If this is set to false, you
+will need to call `updateDisplayedLayers()` manually when you want it to
+actually update.
+
+#### Events
+
+##### `change`
+Fired when the selected time changes (either through manually sliding or
+through playback).
+
+### `L.TimelineSliderControl`
+
+This is the actual control that allows playback and whatnot. It can control
+multiple `L.Timeline`s.
+
+#### Options
+
+##### `start`
 *default: earliest `start` in GeoJSON*
 
 The beginning/minimum value of the timeline.
 
-#### `end`
+##### `end`
 *default: latest `end` in GeoJSON*
 
 The end/maximum value of the timeline.
 
-#### `position`
+##### `position`
 *default: bottomleft*
 
 [Position](http://leafletjs.com/reference.html#control) for the timeline
 controls. Probably doesn't really matter as you'll likely want to expand them
 anyway.
 
-#### `formatDate`
-*default: `(date) -> ""`*
+#### `formatOutput`
+*default: `(date) -> date.toString()`*
 
 A function that takes in a Unix timestamp and outputs a string. Ideally for
 formatting the timestamp, but hey, you can do whatever you want.
@@ -116,7 +147,8 @@ step time.
 #### `showTicks`
 *default: true*
 
-Show tick marks on slider, representing changes in value(s).
+Show tick marks on slider (if the browser supports it), representing changes in
+value(s).
 
 #### `waitToUpdateMap`
 *default: false*
@@ -124,18 +156,6 @@ Show tick marks on slider, representing changes in value(s).
 Wait until the user is finished changing the date to update the map. By default,
 both the map and the date update for every change. With complex data, this can
 slow things down, so set this to true to only update the displayed date.
-
-#### `intervalFromFeature`
-
-A function that should, given a feature, return an object with `start` and `end`
-properties, representing the start time and end time of the feature. By default
-it will use `feature.properties.start` and `feature.properties.end`.
-
-## Events
-
-#### `change`
-Fired when the selected time changes (either through manually sliding or
-through playback).
 
 ## Methods
 
@@ -151,17 +171,37 @@ on the map.
 
 To get the project running locally, clone this repo and run these commands
 within the project folder:
+
 ```
 npm install
-gulp start
+npm test-watch
 ```
-Open your browser to http://localhost:8000/examples/borders.html or http://localhost:8000/examples/earthquakes.html
 
-The page will reload whenever file changes are made, so you can use the examples to test the changes you want to contribute to the project.
+To view the examples, you'll need to build:
 
-Please create a pull request from your fork of the project, and provide details of the intent of the changes.
+```
+npm run build
+```
+
+Then open up the HTML files in the "examples" folders in your browser.
+
+~~The page will reload whenever file changes are made, so you can use the examples
+to test the changes you want to contribute to the project.~~
+
+Eventually the examples will be handily self-updating and such again soon, once
+I get a handle on webpack-dev-server.
+
+Please create a pull request from your fork of the project, and provide details
+of the intent of the changes.
 
 ## Change log
+
+### 1.0.0-beta
+- Completely rewrote in ES6
+- Overhauled build system with webpack
+- Separated layer from control, allowing the control to handle multiple
+  layers at the same time
+- Added tests!
 
 ### 0.4.3
 - Build tweaks
