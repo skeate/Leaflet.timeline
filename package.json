@@ -3,7 +3,7 @@
   "version": "1.0.0-beta",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
-    "build": "webpack --progress --watch",
+    "build": "webpack",
     "test": "karma start --single-run",
     "test-watch": "karma start",
     "dev": "webpack-dev-server --host 0.0.0.0",
