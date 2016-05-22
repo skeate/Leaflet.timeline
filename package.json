@@ -6,6 +6,7 @@
     "build": "webpack",
     "test": "karma start --single-run",
     "test-watch": "karma start",
+    "dev": "webpack-dev-server --host 0.0.0.0",
     "prepublish": "npm run build"
   },
   "main": "dist/leaflet.timeline.min.js",
@@ -45,14 +46,17 @@
     "karma-sourcemap-loader": "^0.3.6",
     "karma-webpack": "^1.7.0",
     "leaflet": "^0.7.7",
+    "lolex": "^1.5.0",
     "mocha": "^2.3.4",
     "mocha-loader": "^0.7.1",
     "node-sass": "^3.4.2",
-    "phantomjs": "^1.9.19",
+    "phantomjs": "^1.9.20",
     "sass-loader": "^3.1.2",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
     "diesal": "^0.2.1"
