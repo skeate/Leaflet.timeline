@@ -104,11 +104,11 @@ describe('Timeline', () => {
   it('should adjust layers on setTime', () => {
     const layer = L.timeline(geojson);
     layer.setTime(124);
-    layer.displayedLayers.length.should.equal(1);
-    layer.displayedLayers[0].geoJSON.should.equal(geojson.features[1]);
+    layer.getLayers().length.should.equal(1);
+    layer.getLayers()[0].feature.should.equal(geojson.features[1]);
     layer.setTime('1985-06-15');
-    layer.displayedLayers.length.should.equal(2);
+    layer.getLayers().length.should.equal(2);
     layer.setTime('2000-01-02');
-    layer.displayedLayers.length.should.equal(1);
+    layer.getLayers().length.should.equal(1);
   });
 });
