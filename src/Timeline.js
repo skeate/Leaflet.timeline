@@ -4,7 +4,6 @@ import IntervalTree from 'diesal/src/ds/IntervalTree';
 
 L.Timeline = L.GeoJSON.extend({
   times: [],
-  displayedLayers: [],
   ranges: null,
 
   /**
@@ -90,61 +89,6 @@ L.Timeline = L.GeoJSON.extend({
   },
 
   /**
-   * Overrides `L.GeoJSON`'s addData. Largely copy/paste (with some ES2015
-   * conversion), but the key difference is that this will also track the layers
-   * that have been added.
-   *
-   * @param {Object[]|Object} geojson A GeoJSON object or array of GeoJSON
-   * objects.
-   * @returns {L.Timeline} `this`
-   */
-  addData(geojson) {
-    const features = L.Util.isArray(geojson) ? geojson : geojson.features;
-    if (features) {
-      features
-      .filter((f) => f.geometries || f.geometry || f.features || f.coordinates)
-      .forEach((feature) => this.addData(feature));
-      return this;
-    }
-    if (this.options.filter && !this.options.filter(geojson)) {
-      return this;
-    }
-    const layer = L.GeoJSON.geometryToLayer(
-      geojson,
-      this.isOldVersion ? this.options.pointToLayer : this.options
-    );
-    if (!layer) {
-      return this;
-    }
-    // *** this is the main custom part, here ***
-    this.displayedLayers.push({layer, geoJSON: geojson});
-    // *** end custom bit. wasn't that useful? ***
-    layer.feature = L.GeoJSON.asFeature(geojson);
-    layer.defaultOptions = layer.options;
-    this.resetStyle(layer);
-    if (this.options.onEachFeature) {
-      this.options.onEachFeature(geojson, layer);
-    }
-    this.addLayer(layer);
-  },
-
-  /**
-   * Removes a layer, optionally also removing it from the `displayedLayers`
-   * array.
-   *
-   * @param {L.Layer} layer The layer to remove
-   * @param {Boolean} [removeDisplayed] Also remove from `displayedLayers`
-   */
-  removeLayer(layer, removeDisplayed = true) {
-    L.GeoJSON.prototype.removeLayer.call(this, layer);
-    if (removeDisplayed) {
-      this.displayedLayers = this.displayedLayers.filter(
-        (displayedLayer) => displayedLayer.layer !== layer
-      );
-    }
-  },
-
-  /**
    * Sets the time for this layer.
    *
    * @param {Number|String} time The time to set. Usually a number, but if your
@@ -172,27 +116,25 @@ L.Timeline = L.GeoJSON.extend({
     // we find a match, then we remove it from the feature list. If we don't
     // find a match, then the displayed layer is no longer valid at this time.
     // We should remove it.
-    for (let i = 0; i < this.displayedLayers.length; i++) {
+    for (let i = 0; i < this.getLayers().length; i++) {
       let found = false;
+      const layer = this.getLayers()[i];
       for (let j = 0; j < features.length; j++) {
-        if (this.displayedLayers[i].geoJSON === features[j]) {
+        if (layer.feature === features[j]) {
           found = true;
           features.splice(j, 1);
           break;
         }
       }
       if (!found) {
-        const toRemove = this.displayedLayers.splice(i--, 1);
-        this.removeLayer(toRemove[0].layer, false);
+        const toRemove = this.getLayers()[i--];
+        this.removeLayer(toRemove);
       }
     }
     // Finally, with any features left, they must be new data! We can add them.
     features.forEach((feature) => this.addData(feature));
-  },
+  }
 
-  getDisplayed() {
-    return this.displayedLayers.map((layer) => layer.geoJSON);
-  },
 });
 
 L.timeline = (geojson, options) => new L.Timeline(geojson, options);
