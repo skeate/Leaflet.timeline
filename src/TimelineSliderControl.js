@@ -283,8 +283,8 @@ L.TimelineSliderControl = L.Control.extend({
     slider.value = this.start || 0;
     slider.addEventListener('change', (e) => this._sliderChanged(e));
     slider.addEventListener('input', (e) => this._sliderChanged(e));
-    slider.addEventListener('mousedown', () => this.map.dragging.disable());
-    document.addEventListener('mouseup', () => this.map.dragging.enable());
+    slider.addEventListener('pointerdown', () => this.map.dragging.disable());
+    document.addEventListener('pointerup', () => this.map.dragging.enable());
     this._timeSlider = slider;
   },
 
