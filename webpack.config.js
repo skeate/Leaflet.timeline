@@ -1,6 +1,5 @@
-/* eslint-disable */
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   entry: {
@@ -9,20 +8,30 @@ module.exports = {
   },
 
   output: {
-    path: __dirname + '/dist',
+    path: path.join(__dirname, 'dist'),
     filename: '[name].js'
   },
 
   module: {
-    loaders: [
-      { test: /\.js$/, loader: 'babel' },
+    rules: [
       {
-        test: /\.sass$/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          'css!sass'
-        )
-      }
+        test: /\.js$/i,
+        loader: 'babel-loader',
+        exclude: /node_modules\/(^diesal)/,
+      },
+      {
+        test: /\.s[ac]ss$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          {
+            loader: 'sass-loader',
+            options: {
+              indentedSyntax: true,
+            },
+          },
+        ],
+      },
     ]
   },
 
@@ -31,13 +40,17 @@ module.exports = {
       include: /\.min\.js$/,
       minimize: true,
     }),
-    new ExtractTextPlugin('leaflet.timeline.min.css'),
-    new webpack.SourceMapDevToolPlugin({
-      exclude: /(\.min\.js|\.css)$/,
-    })
   ],
 
-  sassLoader: {
-    indentedSyntax: true
-  }
+  devtool: 'eval-source-map',
+
+  devServer: {
+    inline: true,
+    contentBase: [
+      'examples',
+      'node_modules/leaflet/dist',
+    ],
+    port: 8112,
+    host: '0.0.0.0',
+  },
 };

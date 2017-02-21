@@ -1,11 +1,10 @@
 <html>
   <head>
-    <title>Leaflet.timeline</title>
-    <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
-    <script src="../dist/leaflet.timeline.min.js"></script>
+    <title>Leaflet.timeline Example - Country Borders</title>
+    <script src="leaflet-src.js"></script>
+    <script src="leaflet.timeline.min.js"></script>
 
-    <link href="../node_modules/leaflet/dist/leaflet.css" rel="stylesheet">
-    <link href="../dist/leaflet.timeline.min.css" rel="stylesheet">
+    <link href="leaflet.css" rel="stylesheet">
 
     <style>
       html, body{
@@ -44,7 +43,7 @@
       var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       var osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
       var osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
-      var map = L.map('map', {layers: [osm], center: new L.LatLng(0,0), zoom: 1 });
+      var map = L.map('map', {layers: [osm], center: new L.LatLng(0,0), zoom: 2 });
 
       function onLoadData(data){
         var timeline = L.timeline(data, {
@@ -55,11 +54,15 @@
               fillOpacity: 0.5
             }
           },
-          waitToUpdateMap: true
+          waitToUpdateMap: true,
+          onEachFeature: function(feature, layer) {
+            layer.bindTooltip(feature.properties.name);
+          }
         });
+
         var timelineControl = L.timelineSliderControl({
-          formatOutput: function(date){
-            return new Date(date).toString();
+          formatOutput: function(date) {
+            return new Date(date).toLocaleDateString();
           },
           enableKeyboardControls: true,
         });

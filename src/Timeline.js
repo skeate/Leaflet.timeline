@@ -18,13 +18,7 @@ L.Timeline = L.GeoJSON.extend({
    * `updateDisplayedLayers()` manually.
    */
   initialize(geojson, options = {}) {
-    // Some functionality was changed after Leaflet 0.7; some people use the
-    // latest stable, some use the beta. This should work either way, so we need
-    // a version check.
     this.ranges = new IntervalTree();
-    const semver = /^(\d+)(\.(\d+))?(\.(\d+))?(-(.*))?(\+(.*))?$/;
-    const [, major,, minor] = semver.exec(L.version);
-    this.isOldVersion = parseInt(major, 10) === 0 && parseInt(minor, 10) <= 7;
     const defaultOptions = {
       drawOnSetTime: true,
     };
