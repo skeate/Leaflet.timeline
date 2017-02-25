@@ -36,6 +36,23 @@ describe('Timeline', () => {
           "start": 0,
           "end": 946720800000
         }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 2.0],
+            [100.0, 2.0],
+            [100.0, 0.0]
+          ]]
+        },
+        "properties": {
+          "start": 473421600000,
+          "end": 946720800000
+        }
       }
     ]
   };
@@ -76,7 +93,24 @@ describe('Timeline', () => {
     const layer = L.timeline(geojson);
     layer.start.should.equal(0);
     layer.end.should.equal(1420106400000);
-    layer.start.should.equal(0);
+  });
+
+  it('should handle a lack of time data', () => {
+    const layer = L.timeline({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [102, 0.5],
+          },
+          properties: {},
+        },
+      ]
+    });
+    layer.start.should.equal(Infinity);
+    layer.end.should.equal(-Infinity);
   });
 
   it('should accept a function to get interval', () => {
@@ -107,8 +141,18 @@ describe('Timeline', () => {
     layer.getLayers().length.should.equal(1);
     layer.getLayers()[0].feature.should.equal(geojson.features[1]);
     layer.setTime('1985-06-15');
-    layer.getLayers().length.should.equal(2);
+    layer.getLayers().length.should.equal(3);
     layer.setTime('2000-01-02');
+    layer.getLayers().length.should.equal(1);
+  });
+
+  it('should accept a boolean to not draw as soon as setTime is called', () => {
+    const layer = L.timeline(geojson, {
+      drawOnSetTime: false
+    });
+    layer.setTime(124);
+    layer.getLayers().length.should.equal(0);
+    layer.updateDisplayedLayers();
     layer.getLayers().length.should.equal(1);
   });
 });

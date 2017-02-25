@@ -35,10 +35,15 @@ L.Timeline = L.GeoJSON.extend({
   },
 
   _getInterval(feature) {
-    return {
-      start: new Date(feature.properties.start).getTime(),
-      end: new Date(feature.properties.end).getTime(),
-    };
+    const hasStart = 'start' in feature.properties;
+    const hasEnd = 'end' in feature.properties;
+    if (hasStart && hasEnd) {
+      return {
+        start: new Date(feature.properties.start).getTime(),
+        end: new Date(feature.properties.end).getTime(),
+      };
+    }
+    return false;
   },
 
   /**
@@ -55,6 +60,7 @@ L.Timeline = L.GeoJSON.extend({
     let end = -Infinity;
     data.features.forEach((feature) => {
       const interval = this._getInterval(feature);
+      if (!interval) { return; }
       this.ranges.insert(interval.start, interval.end, feature);
       this.times.push(interval.start);
       this.times.push(interval.end);
