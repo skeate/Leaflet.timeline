@@ -7,7 +7,7 @@
 L.TimelineSliderControl = L.Control.extend({
   /**
    * @constructor
-   * @param {Number} [options.duration=600000] The amount of time a complete
+   * @param {Number} [options.duration=10000] The amount of time a complete
    * playback should take. Not guaranteed; if there's a lot of data or
    * complicated rendering, it will likely wind up taking longer.
    * @param {Boolean} [options.enableKeyboardControls=false] Allow playback to

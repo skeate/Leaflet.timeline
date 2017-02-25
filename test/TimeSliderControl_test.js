@@ -56,7 +56,7 @@ describe('TimeSliderControl', () => {
     });
     control.addTo(map);
     should.exist(control._listener);
-    control.removeFrom(map);
+    control.remove(map);
   });
 
   describe('interactions with layers', () => {
