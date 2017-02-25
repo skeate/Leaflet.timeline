@@ -6,6 +6,7 @@
     "start": "webpack-dev-server",
     "test": "cross-env NODE_ENV=test karma start",
     "test:watch": "npm test -- --no-single-run",
+    "prepublishOnly": "webpack -p",
     "dev": "webpack-dev-server --host 0.0.0.0"
   },
   "main": "dist/leaflet.timeline.min.js",
@@ -31,6 +32,7 @@
     "babel-jest": "^6.0.1",
     "babel-loader": "^6.2.0",
     "babel-plugin-istanbul": "^4.0.0",
+    "babel-preset-env": "^1.1.10",
     "babel-preset-es2015": "^6.1.18",
     "chai": "^3.4.1",
     "cross-env": "^3.1.4",
