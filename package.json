@@ -51,6 +51,7 @@
     "node-sass": "^3.13.1",
     "phantomjs": "^2.1.7",
     "sass-loader": "^6.0.1",
+    "simulant": "^0.2.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.0",

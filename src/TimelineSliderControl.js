@@ -138,7 +138,7 @@ L.TimelineSliderControl = L.Control.extend({
         if (mode === -1) {
           return lastTime;
         }
-        else if (mode === 1) {
+        else /* if (mode === 1) */ {
           if (time === findTime) {
             retNext = true;
           }
@@ -146,11 +146,13 @@ L.TimelineSliderControl = L.Control.extend({
             return time;
           }
         }
-        else {
-          const prevDiff = Math.abs(findTime - lastTime);
-          const nextDiff = Math.abs(findTime - time);
-          return prevDiff < nextDiff ? lastTime : time;
-        }
+        // this isn't actually used anywhere, and it's a private method
+        // so .. commenting out
+        // else {
+        //   const prevDiff = Math.abs(findTime - lastTime);
+        //   const nextDiff = Math.abs(findTime - time);
+        //   return prevDiff < nextDiff ? lastTime : time;
+        // }
       }
       lastTime = time;
     }
@@ -448,6 +450,7 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   onRemove() {
+    /* istanbul ignore else */
     if (this.options.enableKeyboardControls) {
       this._removeKeyListeners();
     }
