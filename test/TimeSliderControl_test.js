@@ -1,4 +1,4 @@
-/* global L, chai, should, sinon */
+/* global L, sinon */
 /* eslint-disable no-unused-expressions */
 
 import '../src/TimelineSliderControl';
