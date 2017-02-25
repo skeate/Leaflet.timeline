@@ -17,7 +17,7 @@ module.exports = {
       {
         test: /\.js$/i,
         loader: 'babel-loader',
-        exclude: /node_modules\/(^diesal)/,
+        exclude: /node_modules\/(?!diesal)/,
       },
       {
         test: /\.s[ac]ss$/,
