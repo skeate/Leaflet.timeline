@@ -3,7 +3,7 @@
 import IntervalTree from 'diesal/src/ds/IntervalTree';
 
 L.Timeline = L.GeoJSON.extend({
-  times: [],
+  times: null,
   ranges: null,
 
   /**
@@ -18,6 +18,7 @@ L.Timeline = L.GeoJSON.extend({
    * `updateDisplayedLayers()` manually.
    */
   initialize(geojson, options = {}) {
+    this.times = [];
     this.ranges = new IntervalTree();
     const defaultOptions = {
       drawOnSetTime: true,
