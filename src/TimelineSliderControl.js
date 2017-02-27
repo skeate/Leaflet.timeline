@@ -36,7 +36,7 @@ L.TimelineSliderControl = L.Control.extend({
       duration:               10000,
       enableKeyboardControls: false,
       enablePlayback:         true,
-      formatOutput:           (output) => `${output || ''}`,
+      formatOutput:           output => `${output || ''}`,
       showTicks:              true,
       waitToUpdateMap:        false,
       position:               'bottomleft',
@@ -63,7 +63,7 @@ L.TimelineSliderControl = L.Control.extend({
     const times = [];
     this.timelines.forEach((timeline) => {
       const timesInRange = timeline.times
-        .filter((time) => time >= this.start && time <= this.end);
+        .filter(time => time >= this.start && time <= this.end);
       times.push(...timesInRange);
     });
     if (times.length) {
@@ -138,14 +138,13 @@ L.TimelineSliderControl = L.Control.extend({
         if (mode === -1) {
           return lastTime;
         }
-        else /* if (mode === 1) */ {
-          if (time === findTime) {
-            retNext = true;
-          }
-          else {
-            return time;
-          }
+        // else if (mode === 1) {
+        if (time === findTime) {
+          retNext = true;
+        } else {
+          return time;
         }
+        // }
         // this isn't actually used anywhere, and it's a private method
         // so .. commenting out
         // else {
@@ -178,12 +177,12 @@ L.TimelineSliderControl = L.Control.extend({
       const sliderCtrlC = L.DomUtil.create(
         'div',
         'sldr-ctrl-container',
-        container
+        container,
       );
       const buttonContainer = L.DomUtil.create(
         'div',
         'button-container',
-        sliderCtrlC
+        sliderCtrlC,
       );
       this._makeButtons(buttonContainer);
       if (this.options.enableKeyboardControls) {
@@ -283,8 +282,8 @@ L.TimelineSliderControl = L.Control.extend({
     slider.min = this.start || 0;
     slider.max = this.end || 0;
     slider.value = this.start || 0;
-    slider.addEventListener('change', (e) => this._sliderChanged(e));
-    slider.addEventListener('input', (e) => this._sliderChanged(e));
+    slider.addEventListener('change', e => this._sliderChanged(e));
+    slider.addEventListener('input', e => this._sliderChanged(e));
     slider.addEventListener('pointerdown', () => this.map.dragging.disable());
     document.addEventListener('pointerup', () => this.map.dragging.enable());
     this._timeSlider = slider;
@@ -309,7 +308,7 @@ L.TimelineSliderControl = L.Control.extend({
     const time = parseFloat(e.target.value, 10);
     this.time = time;
     if (!this.options.waitToUpdateMap || e.type === 'change') {
-      this.timelines.forEach((timeline) => timeline.setTime(time));
+      this.timelines.forEach(timeline => timeline.setTime(time));
     }
     if (this._output) {
       this._output.innerHTML = this.options.formatOutput(time);
@@ -373,8 +372,7 @@ L.TimelineSliderControl = L.Control.extend({
   toggle() {
     if (this._playing) {
       this.pause();
-    }
-    else {
+    } else {
       this.play();
     }
   },
@@ -412,8 +410,7 @@ L.TimelineSliderControl = L.Control.extend({
     if (parseFloat(this._timeSlider.value, 10) === this.end) {
       this._playing = false;
       this.container.classList.remove('playing');
-    }
-    else {
+    } else {
       this._playing = true;
       this.container.classList.add('playing');
       this._timer = setTimeout(() => this.play(), this._stepDuration);
@@ -437,8 +434,8 @@ L.TimelineSliderControl = L.Control.extend({
    */
   setTime(time) {
     this._sliderChanged({
-      type: 'change',
-      target: {value: time},
+      type:   'change',
+      target: { value: time },
     });
   },
 

@@ -3,7 +3,7 @@
 import IntervalTree from 'diesal/src/ds/IntervalTree';
 
 L.Timeline = L.GeoJSON.extend({
-  times: null,
+  times:  null,
   ranges: null,
 
   /**
@@ -40,7 +40,7 @@ L.Timeline = L.GeoJSON.extend({
     if (hasStart && hasEnd) {
       return {
         start: new Date(feature.properties.start).getTime(),
-        end: new Date(feature.properties.end).getTime(),
+        end:   new Date(feature.properties.end).getTime(),
       };
     }
     return false;
@@ -133,9 +133,8 @@ L.Timeline = L.GeoJSON.extend({
       }
     }
     // Finally, with any features left, they must be new data! We can add them.
-    features.forEach((feature) => this.addData(feature));
-  }
-
+    features.forEach(feature => this.addData(feature));
+  },
 });
 
 L.timeline = (geojson, options) => new L.Timeline(geojson, options);
