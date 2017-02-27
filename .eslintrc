@@ -1,10 +1,10 @@
 {
   "extends": "airbnb",
   "env": {
-    "browser": true,
+    "browser": true
   },
   "rules": {
-    "key-spacing": ["error", {
+    "key-spacing": [0, {
       "align": "value"
     }],
     "no-underscore-dangle": 0,
