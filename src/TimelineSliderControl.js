@@ -315,6 +315,16 @@ L.TimelineSliderControl = L.Control.extend({
     }
   },
 
+  _resetIfTimelinesChanged(oldTimelineCount) {
+    if (this.timelines.length !== oldTimelineCount) {
+      this._recalculate();
+      if (this.options.showTicks) {
+        this._rebuildDataList();
+      }
+      this.setTime(this.start);
+    }
+  }
+
   /* EXTERNAL API *************************************************************/
 
   /**
@@ -332,13 +342,7 @@ L.TimelineSliderControl = L.Control.extend({
         this.timelines.push(timeline);
       }
     });
-    if (this.timelines.length !== timelineCount) {
-      this._recalculate();
-      if (this.options.showTicks) {
-        this._rebuildDataList();
-      }
-      this.setTime(this.start);
-    }
+    this._resetIfTimelinesChanged(timelineCount);
   },
 
   /**
@@ -357,13 +361,7 @@ L.TimelineSliderControl = L.Control.extend({
         this.timelines.splice(index, 1);
       }
     });
-    if (this.timelines.length !== timelineCount) {
-      this._recalculate();
-      if (this.options.showTicks) {
-        this._rebuildDataList();
-      }
-      this.setTime(this.start);
-    }
+    this._resetIfTimelinesChanged(timelineCount);
   },
 
   /**

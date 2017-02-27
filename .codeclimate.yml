@@ -19,5 +19,6 @@ exclude_paths:
 - "dist/**/*"
 - "karma.conf.js"
 - "webpack.config.js"
+- "webpack.prod.js"
 - "examples/**/*"
 - "defs/**/*"
