@@ -323,7 +323,7 @@ L.TimelineSliderControl = L.Control.extend({
       }
       this.setTime(this.start);
     }
-  }
+  },
 
   /* EXTERNAL API *************************************************************/
 
