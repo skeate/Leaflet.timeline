@@ -2,6 +2,7 @@
 [![Code Climate](https://codeclimate.com/github/skeate/Leaflet.timeline/badges/gpa.svg)](https://codeclimate.com/github/skeate/Leaflet.timeline)
 [![Test Coverage](https://codeclimate.com/github/skeate/Leaflet.timeline/badges/coverage.svg)](https://codeclimate.com/github/skeate/Leaflet.timeline/coverage)
 [![Greenkeeper badge](https://badges.greenkeeper.io/skeate/Leaflet.timeline.svg)](https://greenkeeper.io/)
+[![npm version](https://img.shields.io/npm/v/leaflet.timeline.svg)](https://www.npmjs.com/package/leaflet.timeline)
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
