@@ -4,7 +4,7 @@
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Leaflet.timeline 1.0.0-beta
+# Leaflet.timeline 1.0.0
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -195,6 +195,12 @@ Please create a pull request from your fork of the project, and provide details
 of the intent of the changes.
 
 ## Change log
+
+### 1.0.0
+- 100% test coverage
+- BUGFIX: `times` is no longer shared among all Timeline instances
+- Switch to pointer events for better mobile support (hopefully)
+- More build tweaks, including setting up a dev server
 
 ### 1.0.0-beta
 - Completely rewrote in ES6
