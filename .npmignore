@@ -6,3 +6,5 @@ npm-debug.log
 examples
 src
 coverage
+defs
+test
