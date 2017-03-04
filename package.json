@@ -58,7 +58,7 @@
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.0",
-    "uglifyjs-webpack-plugin": "^0.2.1",
+    "uglifyjs-webpack-plugin": "^0.3.0",
     "webpack": "^2.0.0",
     "webpack-dev-server": "^2.4.1",
     "webpack-merge": "^3.0.0"
