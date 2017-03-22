@@ -19,6 +19,9 @@ some ideas.
 
 ## Examples
 
+To run the examples locally, run `npm start` and then open a browser to
+http://localhost:8112.
+
 ### [Earthquakes][1]
 
 USGS provides [GeoJSON(P) files][2] with earthquake data, including time and
