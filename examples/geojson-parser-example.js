@@ -1,5 +1,11 @@
+/**
+ * Example of a conversion script for creating valid
+ * timeline geojson (with start & end properties)
+ * from standard geojson
+ */
+
 var fs = require('fs');
-var data = require('./borders.json');
+var data = require('./path/to/original-geojson.json');
 
 var parsed_data = {
   type: "FeatureCollection",
@@ -24,4 +30,4 @@ var parsed_data = {
   })
 };
 
-fs.writeFile('borders-parsed.jsonp', 'onLoadData(' + JSON.stringify(parsed_data) + ');');
+fs.writeFile('geojson-parsed.jsonp', 'onLoadData(' + JSON.stringify(parsed_data) + ');');
