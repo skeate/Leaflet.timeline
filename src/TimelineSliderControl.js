@@ -33,14 +33,14 @@ L.TimelineSliderControl = L.Control.extend({
    */
   initialize(options = {}) {
     const defaultOptions = {
-      duration:               10000,
+      duration: 10000,
       enableKeyboardControls: false,
-      enablePlayback:         true,
-      formatOutput:           output => `${output || ''}`,
-      showTicks:              true,
-      waitToUpdateMap:        false,
-      position:               'bottomleft',
-      steps:                  1000,
+      enablePlayback: true,
+      formatOutput: output => `${output || ''}`,
+      showTicks: true,
+      waitToUpdateMap: false,
+      position: 'bottomleft',
+      steps: 1000,
     };
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
@@ -296,10 +296,17 @@ L.TimelineSliderControl = L.Control.extend({
 
   _onKeydown(e) {
     switch (e.keyCode || e.which) {
-      case 37: this.prev(); break;
-      case 39: this.next(); break;
-      case 32: this.toggle(); break;
-      default: return;
+      case 37:
+        this.prev();
+        break;
+      case 39:
+        this.next();
+        break;
+      case 32:
+        this.toggle();
+        break;
+      default:
+        return;
     }
     e.preventDefault();
   },
@@ -388,22 +395,28 @@ L.TimelineSliderControl = L.Control.extend({
   /**
    * Pauses playback.
    */
-  pause() {
+  pause(fromSynced) {
     clearTimeout(this._timer);
     this._playing = false;
     this.container.classList.remove('playing');
+
+    if (this.syncedControl && !fromSynced) {
+      this.syncedControl.map(function (control) {
+        control.pause(true);
+      })
+    }
   },
 
   /**
    * Starts playback.
    */
-  play() {
+  play(fromSynced) {
     clearTimeout(this._timer);
     if (parseFloat(this._timeSlider.value, 10) === this.end) {
       this._timeSlider.value = this.start;
     }
-    this._timeSlider.value = parseFloat(this._timeSlider.value, 10)
-      + this._stepSize;
+    this._timeSlider.value = parseFloat(this._timeSlider.value, 10) +
+      this._stepSize;
     this.setTime(this._timeSlider.value);
     if (parseFloat(this._timeSlider.value, 10) === this.end) {
       this._playing = false;
@@ -411,7 +424,13 @@ L.TimelineSliderControl = L.Control.extend({
     } else {
       this._playing = true;
       this.container.classList.add('playing');
-      this._timer = setTimeout(() => this.play(), this._stepDuration);
+      this._timer = setTimeout(() => this.play(true), this._stepDuration);
+    }
+
+    if (this.syncedControl && !fromSynced) {
+      this.syncedControl.map(function (control) {
+        control.play(true);
+      });
     }
   },
 
@@ -432,8 +451,10 @@ L.TimelineSliderControl = L.Control.extend({
    */
   setTime(time) {
     this._sliderChanged({
-      type:   'change',
-      target: { value: time },
+      type: 'change',
+      target: {
+        value: time
+      },
     });
   },
 
@@ -450,6 +471,13 @@ L.TimelineSliderControl = L.Control.extend({
       this._removeKeyListeners();
     }
   },
+
+  syncControl(controlToSync) {
+    if (!this.syncedControl) {
+      this.syncedControl = [];
+    }
+    this.syncedControl.push(syncedControl);
+  }
 });
 
 L.timelineSliderControl = (timeline, start, end, timelist) =>
