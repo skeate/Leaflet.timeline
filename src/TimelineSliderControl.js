@@ -33,14 +33,14 @@ L.TimelineSliderControl = L.Control.extend({
    */
   initialize(options = {}) {
     const defaultOptions = {
-      duration: 10000,
+      duration:               10000,
       enableKeyboardControls: false,
-      enablePlayback: true,
-      formatOutput: output => `${output || ''}`,
-      showTicks: true,
-      waitToUpdateMap: false,
-      position: 'bottomleft',
-      steps: 1000,
+      enablePlayback:         true,
+      formatOutput:           output => `${output || ''}`,
+      showTicks:              true,
+      waitToUpdateMap:        false,
+      position:               'bottomleft',
+      steps:                  1000,
     };
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
@@ -296,17 +296,10 @@ L.TimelineSliderControl = L.Control.extend({
 
   _onKeydown(e) {
     switch (e.keyCode || e.which) {
-      case 37:
-        this.prev();
-        break;
-      case 39:
-        this.next();
-        break;
-      case 32:
-        this.toggle();
-        break;
-      default:
-        return;
+      case 37: this.prev(); break;
+      case 39: this.next(); break;
+      case 32: this.toggle(); break;
+      default: return;
     }
     e.preventDefault();
   },
@@ -451,10 +444,8 @@ L.TimelineSliderControl = L.Control.extend({
    */
   setTime(time) {
     this._sliderChanged({
-      type: 'change',
-      target: {
-        value: time
-      },
+      type:   'change',
+      target: { value: time },
     });
   },
 
