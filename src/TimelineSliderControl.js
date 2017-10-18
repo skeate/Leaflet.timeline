@@ -388,22 +388,28 @@ L.TimelineSliderControl = L.Control.extend({
   /**
    * Pauses playback.
    */
-  pause() {
+  pause(fromSynced) {
     clearTimeout(this._timer);
     this._playing = false;
     this.container.classList.remove('playing');
+
+    if (this.syncedControl && !fromSynced) {
+      this.syncedControl.map(function (control) {
+        control.pause(true);
+      })
+    }
   },
 
   /**
    * Starts playback.
    */
-  play() {
+  play(fromSynced) {
     clearTimeout(this._timer);
     if (parseFloat(this._timeSlider.value, 10) === this.end) {
       this._timeSlider.value = this.start;
     }
-    this._timeSlider.value = parseFloat(this._timeSlider.value, 10)
-      + this._stepSize;
+    this._timeSlider.value = parseFloat(this._timeSlider.value, 10) +
+      this._stepSize;
     this.setTime(this._timeSlider.value);
     if (parseFloat(this._timeSlider.value, 10) === this.end) {
       this._playing = false;
@@ -411,7 +417,13 @@ L.TimelineSliderControl = L.Control.extend({
     } else {
       this._playing = true;
       this.container.classList.add('playing');
-      this._timer = setTimeout(() => this.play(), this._stepDuration);
+      this._timer = setTimeout(() => this.play(true), this._stepDuration);
+    }
+
+    if (this.syncedControl && !fromSynced) {
+      this.syncedControl.map(function (control) {
+        control.play(true);
+      });
     }
   },
 
@@ -450,6 +462,13 @@ L.TimelineSliderControl = L.Control.extend({
       this._removeKeyListeners();
     }
   },
+
+  syncControl(controlToSync) {
+    if (!this.syncedControl) {
+      this.syncedControl = [];
+    }
+    this.syncedControl.push(syncedControl);
+  }
 });
 
 L.timelineSliderControl = (timeline, start, end, timelist) =>
