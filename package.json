@@ -1,6 +1,6 @@
 {
   "name": "leaflet.timeline",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
