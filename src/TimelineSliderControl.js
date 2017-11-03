@@ -309,7 +309,7 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   _sliderChanged(e) {
-    const time = parseFloat(e.target.value, 10);
+    const time = parseFloat(+e.target.value, 10);
     this.time = time;
     if (!this.options.waitToUpdateMap || e.type === 'change') {
       this.timelines.forEach(timeline => timeline.setTime(time));
@@ -447,6 +447,7 @@ L.TimelineSliderControl = L.Control.extend({
    * @param {Number} time The time to set
    */
   setTime(time) {
+    if (this._timeSlider) this._timeSlider.value = +time;
     this._sliderChanged({
       type:   'change',
       target: { value: time },
