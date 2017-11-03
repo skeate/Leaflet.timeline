@@ -45,5 +45,6 @@ module.exports = {
     ],
     port: 8112,
     host: '0.0.0.0',
+    disableHostCheck: true,
   },
 };
