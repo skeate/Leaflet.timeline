@@ -271,6 +271,24 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   /**
+   * DOM event handler to disable dragging on map
+   * 
+   * @private
+   */
+  _disableMapDragging() {
+    this.map.dragging.disable();
+  },
+
+  /** 
+   * DOM event handler to enable dragging on map
+   * 
+   * @private
+   */
+  _enableMapDragging() {
+    this.map.dragging.enable();
+  },
+
+  /**
    * Creates the range input
    *
    * @private
@@ -282,15 +300,11 @@ L.TimelineSliderControl = L.Control.extend({
     slider.min = this.start || 0;
     slider.max = this.end || 0;
     slider.value = this.start || 0;
-    slider.addEventListener('change', e => this._sliderChanged(e));
-    slider.addEventListener('input', e => this._sliderChanged(e));
-    slider.addEventListener('pointerdown', () => this.map.dragging.disable());
-    slider.addEventListener('mousedown', () => this.map.dragging.disable());
-    slider.addEventListener('touchstart', () => this.map.dragging.disable());
-    document.addEventListener('pointerup', () => this.map.dragging.enable());
-    document.addEventListener('mouseup', () => this.map.dragging.enable());
-    document.addEventListener('touchend', () => this.map.dragging.enable());
     this._timeSlider = slider;
+    // register events using leaflet for easy removal
+    L.DomEvent.on(this._timeSlider, 'change input', this._sliderChanged, this);
+    L.DomEvent.on(this._timeSlider, 'pointerdown mousedown touchstart', this._disableMapDragging, this);
+    L.DomEvent.on(document, 'pointerup mouseup touchend', this._enableMapDragging, this);
   },
 
   _makeOutput(container) {
@@ -466,6 +480,12 @@ L.TimelineSliderControl = L.Control.extend({
     if (this.options.enableKeyboardControls) {
       this._removeKeyListeners();
     }
+    // cleanup events registered in _makeSlider
+    L.DomEvent.off(this._timeSlider, 'change input', this._sliderChanged, this);
+    L.DomEvent.off(this._timeSlider, 'pointerdown mousedown touchstart', this._disableMapDragging, this);
+    L.DomEvent.off(document, 'pointerup mouseup touchend', this._enableMapDragging, this);
+    // make sure that dragging is restored to enabled state
+    this._enableMapDragging();
   },
 
   syncControl(controlToSync) {

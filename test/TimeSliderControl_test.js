@@ -317,4 +317,33 @@ describe('TimeSliderControl', () => {
       }, 200);
     });
   });
+
+  describe('events', () => {
+    it('should register document events when added', () => {
+      sinon.spy(L.DomEvent, 'on');
+      const control = L.timelineSliderControl();
+      control.addTo(map);
+      const slider = document.getElementsByClassName('time-slider')[0];
+      L.DomEvent.on.should.have.been.calledWith(document, 'pointerup mouseup touchend');
+      L.DomEvent.on.restore();
+    });
+
+    it('should deregister document events when removed', () => {
+      sinon.spy(L.DomEvent, 'off');
+      const control = L.timelineSliderControl();
+      control.addTo(map);
+      control.remove();
+      L.DomEvent.off.should.have.been.calledWith(document, 'pointerup mouseup touchend');
+      L.DomEvent.off.restore();
+    });
+
+    it('should enable dragging when removed', () => {
+      sinon.spy(map.dragging, 'enable');
+      const control = L.timelineSliderControl();
+      control.addTo(map);
+      control.remove();
+      map.dragging.enable.should.have.been.called;
+      map.dragging.enable.restore();
+    });
+  });
 });
