@@ -6,7 +6,7 @@
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Leaflet.timeline 1.0.0
+# Leaflet.timeline 1.2.1
 
 
 Show any changing geospatial data over time, from points to polygons.
