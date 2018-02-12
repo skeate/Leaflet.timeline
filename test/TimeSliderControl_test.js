@@ -324,7 +324,7 @@ describe('TimeSliderControl', () => {
       const control = L.timelineSliderControl();
       control.addTo(map);
       const slider = document.getElementsByClassName('time-slider')[0];
-      L.DomEvent.on.should.have.have.been.calledWith(document, 'pointerup mouseup touchend');
+      L.DomEvent.on.should.have.been.calledWith(document, 'pointerup mouseup touchend');
       L.DomEvent.on.restore();
     });
 
@@ -333,7 +333,7 @@ describe('TimeSliderControl', () => {
       const control = L.timelineSliderControl();
       control.addTo(map);
       control.remove();
-      L.DomEvent.off.should.have.have.been.calledWith(document, 'pointerup mouseup touchend');
+      L.DomEvent.off.should.have.been.calledWith(document, 'pointerup mouseup touchend');
       L.DomEvent.off.restore();
     });
 
