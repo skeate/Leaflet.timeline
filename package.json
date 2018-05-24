@@ -30,7 +30,7 @@
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-jest": "^22.0.3",
+    "babel-jest": "^23.0.0",
     "babel-loader": "^7.0.0",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
