@@ -180,7 +180,7 @@ within the project folder:
 
 ```
 npm install
-npm test-watch
+npm test --watch
 ```
 
 To view the examples, you'll need to build:
