@@ -41,6 +41,7 @@ L.TimelineSliderControl = L.Control.extend({
       waitToUpdateMap:        false,
       position:               'bottomleft',
       steps:                  1000,
+      autoPlay:               false
     };
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
@@ -193,6 +194,22 @@ L.TimelineSliderControl = L.Control.extend({
     this._makeSlider(container);
     if (this.options.showTicks) {
       this._buildDataList(container);
+    }
+    if (this.options.autoPlay) {
+      this._autoPlay();
+    }
+  },
+
+  /**
+   * Autoplay when loaded
+   *
+   * @private
+   */
+  _autoPlay() {
+    if (document.readyState == 'loading') {
+      window.addEventListener('load', e => this._autoPlay());
+    } else {
+      this.play();
     }
   },
 
