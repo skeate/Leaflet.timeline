@@ -87,7 +87,7 @@
           // map for 150 minutes or 2.5 hours
           return {
             start: quake.properties.time,
-            end:   quake.properties.time + quake.properties.mag * 1800000
+            end:   quake.properties.time + quake.properties.mag * 600000
           };
         };
         var timelineControl = L.timelineSliderControl({
@@ -105,7 +105,7 @@
               radius: data.properties.mag * 3,
               color: "hsl("+hue+", 100%, 50%)",
               fillColor: "hsl("+hue+", 100%, 50%)"
-            }).bindPopup('<a href="'+data.properties.url+'">click for more info</a>');
+            }).bindPopup('Hi');
           }
         });
         timelineControl.addTo(map);
@@ -117,6 +117,7 @@
         updateList(timeline);
       }
     </script>
-    <script src="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>
+    <!--<script src="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>-->
+    <script src="data.geojsonp"></script>
   </body>
 </html>
