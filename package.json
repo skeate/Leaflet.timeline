@@ -51,7 +51,6 @@
     "karma-webpack": "^2.0.5",
     "leaflet": "^1.2.0",
     "mocha": "^4.0.1",
-    "node-sass": "^4.5.0",
     "phantomjs": "^2.1.7",
     "sass-loader": "^6.0.1",
     "simulant": "^0.2.2",
