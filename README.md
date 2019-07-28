@@ -163,6 +163,11 @@ Wait until the user is finished changing the date to update the map. By default,
 both the map and the date update for every change. With complex data, this can
 slow things down, so set this to true to only update the displayed date.
 
+#### `autoPlay`
+*default: false*
+
+Slider starts playing automatically after loading.
+
 ## Methods
 
 #### `setTime`
