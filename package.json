@@ -55,7 +55,7 @@
     "phantomjs": "^2.1.7",
     "sass-loader": "^6.0.1",
     "simulant": "^0.2.2",
-    "sinon": "^4.1.0",
+    "sinon": "^7.4.1",
     "sinon-chai": "^2.14.0",
     "style-loader": "^0.19.0",
     "uglifyjs-webpack-plugin": "^1.0.1",
