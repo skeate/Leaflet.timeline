@@ -53,7 +53,7 @@
     "mocha": "^4.0.1",
     "node-sass": "^4.5.0",
     "phantomjs": "^2.1.7",
-    "sass-loader": "^6.0.1",
+    "sass-loader": "^7.2.0",
     "simulant": "^0.2.2",
     "sinon": "^4.1.0",
     "sinon-chai": "^2.14.0",
