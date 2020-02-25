@@ -512,7 +512,7 @@ L.TimelineSliderControl = L.Control.extend({
     if (!this.syncedControl) {
       this.syncedControl = [];
     }
-    this.syncedControl.push(syncedControl);
+    this.syncedControl.push(controlToSync);
   }
 });
 
