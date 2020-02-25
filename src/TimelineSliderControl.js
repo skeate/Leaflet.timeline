@@ -255,6 +255,7 @@ L.TimelineSliderControl = L.Control.extend({
       datalist.removeChild(datalist.firstChild);
     }
     const datalistSelect = L.DomUtil.create('select', '', this._datalist);
+    datalistSelect.setAttribute('aria-label', 'List of times');
     this._getTimes().forEach((time) => {
       L.DomUtil.create('option', '', datalistSelect).value = time;
     });
@@ -270,6 +271,7 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _makeButton(container, name) {
     const button = L.DomUtil.create('button', name, container);
+    button.setAttribute('aria-label', name);
     button.addEventListener('click', () => this[name]());
     L.DomEvent.disableClickPropagation(button);
   },
@@ -313,6 +315,7 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _makeSlider(container) {
     const slider = L.DomUtil.create('input', 'time-slider', container);
+    slider.setAttribute('aria-label', 'Slider');
     slider.type = 'range';
     slider.min = this.start || 0;
     slider.max = this.end || 0;
