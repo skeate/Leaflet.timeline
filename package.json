@@ -63,6 +63,6 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "diesal": "^0.3.2"
+    "diesal": "^1.0.0"
   }
 }

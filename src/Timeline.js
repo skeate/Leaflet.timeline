@@ -1,6 +1,6 @@
 /* global L */
 
-import IntervalTree from 'diesal/src/ds/IntervalTree';
+import IntervalTree from 'diesal/ds/IntervalTree'
 
 L.Timeline = L.GeoJSON.extend({
   times:  null,
