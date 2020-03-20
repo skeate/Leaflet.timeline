@@ -2,9 +2,12 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "types",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["DOM", "ES5"]
+    "lib": ["DOM", "ES6", "DOM.Iterable"]
   }
 }
