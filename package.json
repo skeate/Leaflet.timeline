@@ -3,14 +3,12 @@
   "version": "1.2.1",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "start": "webpack-dev-server",
+    "build": "tsc",
     "test": "jest",
-    "test:watch": "npm test -- --no-single-run",
-    "prepublishOnly": "npm run build",
-    "dev": "webpack-dev-server --host 0.0.0.0"
+    "prepublishOnly": "npm run build"
   },
-  "main": "dist/leaflet.timeline.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/skeate/Leaflet.timeline.git"
