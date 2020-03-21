@@ -1,5 +1,6 @@
 import { GenericGeoJSONFeatureCollection } from "@yaga/generic-geojson";
 import { IntervalTree } from "diesal";
+/** @ignore */
 import L = require("leaflet");
 
 export type TimedGeoJSON = GenericGeoJSONFeatureCollection<
@@ -47,11 +48,14 @@ declare module "leaflet" {
     ranges: IntervalTree<GeoJSON.Feature>;
     options: Required<TimelineOptions>;
 
+    /** @ignore */
     initialize(
       geojson: TimedGeoJSON | GeoJSON.FeatureCollection,
       options?: TimelineOptions
     ): void;
+    /** @ignore */
     _getInterval(feature: GeoJSON.Feature): TimeBounds | false;
+    /** @ignore */
     _process(geojson: TimedGeoJSON | GeoJSON.FeatureCollection): void;
     updateDisplayedLayers(): void;
     getLayers(): L.GeoJSON[];

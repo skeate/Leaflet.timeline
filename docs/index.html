@@ -1,0 +1,379 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>leaflet.timeline</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">leaflet.timeline</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>leaflet.timeline</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p><a href="https://travis-ci.org/skeate/Leaflet.timeline"><img src="https://travis-ci.org/skeate/Leaflet.timeline.svg" alt="Build Status"></a>
+					<a href="https://codeclimate.com/github/skeate/Leaflet.timeline"><img src="https://codeclimate.com/github/skeate/Leaflet.timeline/badges/gpa.svg" alt="Code Climate"></a>
+					<a href="https://codeclimate.com/github/skeate/Leaflet.timeline/coverage"><img src="https://codeclimate.com/github/skeate/Leaflet.timeline/badges/coverage.svg" alt="Test Coverage"></a>
+				<a href="https://www.npmjs.com/package/leaflet.timeline"><img src="https://img.shields.io/npm/v/leaflet.timeline.svg" alt="npm version"></a></p>
+				<p><a href="https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/skeate/Leaflet.timeline"></a></p>
+				<a href="#leaflettimeline" id="leaflettimeline" style="color: inherit; text-decoration: none;">
+					<h1>Leaflet.timeline</h1>
+				</a>
+				<p>Show any changing geospatial data over time, from points to polygons.</p>
+				<p>If you want smooth motion of markers from point to point, this is not your
+					plugin. Please check out <a href="https://github.com/hallahan/LeafletPlayback">LeafletPlayback</a>, or for real-time data, try
+					<a href="https://github.com/perliedman/leaflet-realtime">Leaflet Realtime</a>, both plugins from which I may or may not have pilfered
+				some ideas.</p>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<p>To run the examples locally, run <code>npm run build</code> and then open the one of the
+				examples in <code>docs/examples</code>.</p>
+				<a href="#a-hrefexamplesearthquakeshtmlearthquakesa" id="a-hrefexamplesearthquakeshtmlearthquakesa" style="color: inherit; text-decoration: none;">
+					<h3><a href="./examples/earthquakes.html">Earthquakes</a></h3>
+				</a>
+				<p>USGS provides <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">GeoJSON(P) files</a> with earthquake data, including time and
+					magnitude. For this example, that data is read, parsed to the right format
+					(<code>start</code> and <code>end</code> values in the GeoJSON <code>properties</code>), and added to a
+				<code>Leaflet.timeline</code>.</p>
+				<a href="#a-hrefexamplesbordershtmlcountry-borders-after-wwiia" id="a-hrefexamplesbordershtmlcountry-borders-after-wwiia" style="color: inherit; text-decoration: none;">
+					<h3><a href="./examples/borders.html">Country borders after WWII</a></h3>
+				</a>
+				<p>I found some historical country border data <a href="http://nils.weidmann.ws/projects/cshapes">here</a>, though
+				unfortunately it was not in GeoJSON. I converted it with <a href="https://www.gdal.org/ogr2ogr.html">ogr2ogr</a>:</p>
+				<pre><code>$ ogr2ogr -f <span class="hljs-string">"GeoJSON"</span> \
+  -<span class="hljs-keyword">select </span>CNTRY_NAME,COWSYEAR,COWSMONTH,COWSDAY,COWEYEAR,COWEMONTH,COWEDAY \
+  <span class="hljs-keyword">borders.json </span>cshapes.shp</code></pre><p>then wrangled the data into the right format (docs/examples/borders-parse.js).
+					After that, it was just a matter of passing the data to <code>Leaflet.timeline</code> and
+				letting it handle everything.</p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>There are actually two classes here. <code>L.Timeline</code> and <code>L.TimelineSliderControl</code>.</p>
+				<a href="#codeltimelinecode" id="codeltimelinecode" style="color: inherit; text-decoration: none;">
+					<h3><code>L.Timeline</code></h3>
+				</a>
+				<p><code>L.Timeline</code> is a subclass of <code>L.GeoJSON</code>, so use it as you would that. The data
+				you pass in should be something like this:</p>
+				<pre><code class="language-json">{
+  &quot;type&quot;: &quot;FeatureCollection&quot;,
+  &quot;features&quot;: [
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;properties&quot;: {
+        &quot;start&quot;: &quot;1970-01-01&quot;,
+        &quot;end&quot;: &quot;2014-12-04&quot;
+      },
+      &quot;geometry&quot;: { ... }
+    }
+  ]
+}</code></pre>
+				<p>Though you can also pass in a <code>getInterval</code> function to parse the data as you
+				wish. (see below)</p>
+				<p>The date can really be any numerical value -- if you&#39;re using this for timed
+					data, a Unix timestamp (the ms version for easier JS usage) probably makes
+				sense.</p>
+				<a href="#options" id="options" style="color: inherit; text-decoration: none;">
+					<h4>Options</h4>
+				</a>
+				<p>see also <a href="http://leafletjs.com/reference.html#geojson">all GeoJSON&#39;s options</a></p>
+				<a href="#codegetintervalcode-function----optional" id="codegetintervalcode-function----optional" style="color: inherit; text-decoration: none;">
+					<h5><code>getInterval</code> (Function -- optional)</h5>
+				</a>
+				<p>This is a function which should return an object with <code>start</code> and <code>end</code>
+				properties. By default it assumes a structure as above.</p>
+				<a href="#codedrawonsettimecode-boolean----optional-default-codetruecode" id="codedrawonsettimecode-boolean----optional-default-codetruecode" style="color: inherit; text-decoration: none;">
+					<h5><code>drawOnSetTime</code> (Boolean -- optional, default <code>true</code>)</h5>
+				</a>
+				<p>Make the layer draw as soon as <code>setTime</code> is called. If this is set to false, you
+					will need to call <code>updateDisplayedLayers()</code> manually when you want it to
+				actually update.</p>
+				<a href="#events" id="events" style="color: inherit; text-decoration: none;">
+					<h4>Events</h4>
+				</a>
+				<a href="#codechangecode" id="codechangecode" style="color: inherit; text-decoration: none;">
+					<h5><code>change</code></h5>
+				</a>
+				<p>Fired when the selected time changes (either through manually sliding or
+				through playback).</p>
+				<a href="#codeltimelineslidercontrolcode" id="codeltimelineslidercontrolcode" style="color: inherit; text-decoration: none;">
+					<h3><code>L.TimelineSliderControl</code></h3>
+				</a>
+				<p>This is the actual control that allows playback and whatnot. It can control
+				multiple <code>L.Timeline</code>s.</p>
+				<a href="#options-1" id="options-1" style="color: inherit; text-decoration: none;">
+					<h4>Options</h4>
+				</a>
+				<a href="#codestartcode" id="codestartcode" style="color: inherit; text-decoration: none;">
+					<h5><code>start</code></h5>
+				</a>
+				<p><em>default: earliest <code>start</code> in GeoJSON</em></p>
+				<p>The beginning/minimum value of the timeline.</p>
+				<a href="#codeendcode" id="codeendcode" style="color: inherit; text-decoration: none;">
+					<h5><code>end</code></h5>
+				</a>
+				<p><em>default: latest <code>end</code> in GeoJSON</em></p>
+				<p>The end/maximum value of the timeline.</p>
+				<a href="#codepositioncode" id="codepositioncode" style="color: inherit; text-decoration: none;">
+					<h5><code>position</code></h5>
+				</a>
+				<p><em>default: bottomleft</em></p>
+				<p><a href="http://leafletjs.com/reference.html#control">Position</a> for the timeline
+					controls. Probably doesn&#39;t really matter as you&#39;ll likely want to expand them
+				anyway.</p>
+				<a href="#codeformatoutputcode" id="codeformatoutputcode" style="color: inherit; text-decoration: none;">
+					<h4><code>formatOutput</code></h4>
+				</a>
+				<p><em>default: <code>(date) -&gt; date.toString()</code></em></p>
+				<p>A function that takes in a Unix timestamp and outputs a string. Ideally for
+				formatting the timestamp, but hey, you can do whatever you want.</p>
+				<a href="#codeenableplaybackcode" id="codeenableplaybackcode" style="color: inherit; text-decoration: none;">
+					<h4><code>enablePlayback</code></h4>
+				</a>
+				<p><em>default: <code>true</code></em></p>
+				<p>Show playback controls (i.e. prev/play/pause/next).</p>
+				<a href="#codeenablekeyboardcontrolscode" id="codeenablekeyboardcontrolscode" style="color: inherit; text-decoration: none;">
+					<h3><code>enableKeyboardControls</code></h3>
+				</a>
+				<p><em>default: <code>false</code></em></p>
+				<p>Allow playback to be controlled using the spacebar (play/pause) and
+				right/left arrow keys (next/previous).</p>
+				<a href="#codestepscode" id="codestepscode" style="color: inherit; text-decoration: none;">
+					<h4><code>steps</code></h4>
+				</a>
+				<p><em>default: 1000</em></p>
+				<p>How many steps to break the timeline into. Each step will then be <code>(end-start) /
+steps</code>. Only affects playback.</p>
+				<a href="#codedurationcode" id="codedurationcode" style="color: inherit; text-decoration: none;">
+					<h4><code>duration</code></h4>
+				</a>
+				<p><em>default: 10000</em></p>
+				<p>Minimum time, in ms, for the playback to take. Will almost certainly actually
+					take at least a bit longer -- after each frame, the next one displays in
+					<code>duration/steps</code> ms, so each frame really takes frame processing time PLUS
+				step time.</p>
+				<a href="#codeshowtickscode" id="codeshowtickscode" style="color: inherit; text-decoration: none;">
+					<h4><code>showTicks</code></h4>
+				</a>
+				<p><em>default: true</em></p>
+				<p>Show tick marks on slider (if the browser supports it), representing changes in
+				value(s).</p>
+				<a href="#codewaittoupdatemapcode" id="codewaittoupdatemapcode" style="color: inherit; text-decoration: none;">
+					<h4><code>waitToUpdateMap</code></h4>
+				</a>
+				<p><em>default: false</em></p>
+				<p>Wait until the user is finished changing the date to update the map. By default,
+					both the map and the date update for every change. With complex data, this can
+				slow things down, so set this to true to only update the displayed date.</p>
+				<a href="#codeautoplaycode" id="codeautoplaycode" style="color: inherit; text-decoration: none;">
+					<h4><code>autoPlay</code></h4>
+				</a>
+				<p><em>default: false</em></p>
+				<p>Slider starts playing automatically after loading.</p>
+				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+					<h2>Methods</h2>
+				</a>
+				<a href="#codesettimecode" id="codesettimecode" style="color: inherit; text-decoration: none;">
+					<h4><code>setTime</code></h4>
+				</a>
+				<p>Sets the current timeline time. Will parse any dates in just about any format
+				you throw at it.</p>
+				<a href="#codegetdisplayedcode" id="codegetdisplayedcode" style="color: inherit; text-decoration: none;">
+					<h4><code>getDisplayed</code></h4>
+				</a>
+				<p>Returns the original GeoJSON of the features that are currently being displayed
+				on the map.</p>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<p>To get the project running locally, clone this repo and run these commands
+				within the project folder:</p>
+				<pre><code>npm <span class="hljs-keyword">install</span>
+npm <span class="hljs-keyword">test</span> <span class="hljs-comment">-- --watchAll</span></code></pre><p>To view the examples, you&#39;ll need to build:</p>
+				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span></code></pre><p>Then open up the HTML files in the &quot;docs/examples&quot; folders in your browser.</p>
+				<p>Please create a pull request from your fork of the project, and provide details
+				of the intent of the changes.</p>
+				<a href="#change-log" id="change-log" style="color: inherit; text-decoration: none;">
+					<h2>Change log</h2>
+				</a>
+				<a href="#140" id="140" style="color: inherit; text-decoration: none;">
+					<h3>1.4.0</h3>
+				</a>
+				<ul>
+					<li>Migrate to Typescript</li>
+					<li>Upgrade <a href="https://skeate.github.io/diesal">Diesal</a> dependency to improve performance on large datasets</li>
+				</ul>
+				<a href="#130" id="130" style="color: inherit; text-decoration: none;">
+					<h3>1.3.0</h3>
+				</a>
+				<ul>
+					<li>Add aria-labels (#136)</li>
+					<li>Add autoplay option (#116)</li>
+				</ul>
+				<a href="#100" id="100" style="color: inherit; text-decoration: none;">
+					<h3>1.0.0</h3>
+				</a>
+				<ul>
+					<li>100% test coverage</li>
+					<li>BUGFIX: <code>times</code> is no longer shared among all Timeline instances</li>
+					<li>Switch to pointer events for better mobile support (hopefully)</li>
+					<li>More build tweaks, including setting up a dev server</li>
+				</ul>
+				<a href="#100-beta" id="100-beta" style="color: inherit; text-decoration: none;">
+					<h3>1.0.0-beta</h3>
+				</a>
+				<ul>
+					<li>Completely rewrote in ES6</li>
+					<li>Overhauled build system with webpack</li>
+					<li>Separated layer from control, allowing the control to handle multiple
+					layers at the same time</li>
+					<li>Added tests!</li>
+				</ul>
+				<a href="#043" id="043" style="color: inherit; text-decoration: none;">
+					<h3>0.4.3</h3>
+				</a>
+				<ul>
+					<li>Build tweaks</li>
+				</ul>
+				<a href="#042" id="042" style="color: inherit; text-decoration: none;">
+					<h3>0.4.2</h3>
+				</a>
+				<ul>
+					<li>Fixed a version check issue</li>
+				</ul>
+				<a href="#041" id="041" style="color: inherit; text-decoration: none;">
+					<h3>0.4.1</h3>
+				</a>
+				<ul>
+					<li>Fixed an issue where removing the L.timeline would not remove the control</li>
+				</ul>
+				<a href="#040" id="040" style="color: inherit; text-decoration: none;">
+					<h3>0.4.0</h3>
+				</a>
+				<ul>
+					<li>Fixed an issue where too wide of a range of dates would case playback to go
+					backwards</li>
+					<li>Added options to pass in methods to handle the data, so you can use a different
+					format if you want</li>
+					<li>Added a grunt build pipeline (thanks to @vencax for this and the two changes above)</li>
+					<li>Fixed a bug where next/previous buttons wouldn&#39;t work as expected if input
+					wasn&#39;t sorted (.. by sorting the input)</li>
+				</ul>
+				<a href="#030" id="030" style="color: inherit; text-decoration: none;">
+					<h3>0.3.0</h3>
+				</a>
+				<ul>
+					<li>Fixed Pause button not turning back into Play button on playback completion</li>
+					<li>Fixed clicks on control buttons zooming map</li>
+					<li>Fixed <code>getDisplayed</code> and event timing</li>
+					<li>Major performance improvements</li>
+					<li>Add <code>waitToUpdateMap</code> option to allow dragging the slider without updating
+					the map until user is done</li>
+				</ul>
+				<a href="#020" id="020" style="color: inherit; text-decoration: none;">
+					<h3>0.2.0</h3>
+				</a>
+				<ul>
+					<li>Added previous/next/pause</li>
+					<li>Change behavior of play button (will play from wherever it is rather than
+					reset to the beginning)</li>
+					<li>Lots of code restructuring</li>
+					<li>Add more extensive default styling, using Sass</li>
+				</ul>
+				<a href="#010" id="010" style="color: inherit; text-decoration: none;">
+					<h3>0.1.0</h3>
+				</a>
+				<ul>
+					<li>It kinda works?</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_timeline_.html">&quot;<wbr>Timeline&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_timelineslidercontrol_.html">&quot;<wbr>Timeline<wbr>Slider<wbr>Control&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+/** @ignore */
 import L = require("leaflet");
 
 interface TimelineSliderControlOptions extends L.ControlOptions {
@@ -70,8 +71,10 @@ interface TimelineSliderControlOptions extends L.ControlOptions {
   formatOutput?(time: number): string;
 }
 
+/** @ignore */
 type PlaybackControl = "play" | "pause" | "prev" | "next";
 
+/** @ignore */
 type TSC = L.TimelineSliderControl;
 
 declare module "leaflet" {
@@ -85,36 +88,63 @@ declare module "leaflet" {
     time: number;
     syncedControl: TSC[];
 
+    /** @ignore */
     _datalist?: HTMLDataListElement;
+    /** @ignore */
     _output?: HTMLOutputElement;
+    /** @ignore */
     _stepDuration: number;
+    /** @ignore */
     _stepSize: number;
+    /** @ignore */
     _timeSlider: HTMLInputElement;
+    /** @ignore */
     _playing: boolean;
+    /** @ignore */
     _timer: number;
+    /** @ignore */
     _listener: (ev: KeyboardEvent) => any;
 
+    /** @ignore */
     initialize(this: TSC, options: TimelineSliderControlOptions): void;
+    /** @ignore */
     _getTimes(this: TSC): number[];
+    /** @ignore */
     _nearestEventTime(this: TSC, findTime: number, mode?: 1 | -1): number;
+    /** @ignore */
     _recalculate(this: TSC): void;
+    /** @ignore */
     _createDOM(this: TSC): void;
+    /** @ignore */
     _addKeyListeners(this: TSC): void;
+    /** @ignore */
     _removeKeyListeners(this: TSC): void;
+    /** @ignore */
     _buildDataList(this: TSC, container: HTMLElement): void;
+    /** @ignore */
     _rebuildDataList(this: TSC): void;
+    /** @ignore */
     _makeButton(this: TSC, container: HTMLElement, name: PlaybackControl): void;
+    /** @ignore */
     _makeButtons(this: TSC, container: HTMLElement): void;
+    /** @ignore */
     _makeOutput(this: TSC, container: HTMLElement): void;
+    /** @ignore */
     _makeSlider(this: TSC, container: HTMLElement): void;
+    /** @ignore */
     _onKeydown(this: TSC, ev: KeyboardEvent): void;
+    /** @ignore */
     _sliderChanged(
       this: TSC,
       e: { type: string; target: { value: string } }
     ): void;
+    /** @ignore */
     _disableMapDragging(this: TSC): void;
+    /** @ignore */
     _enableMapDragging(this: TSC): void;
+    /** @ignore */
     _resetIfTimelinesChanged(this: TSC, oldTimelineCount: number): void;
+    /** @ignore */
     _autoPlay(this: TSC): void;
 
     play(this: TSC, fromSynced?: boolean): void;

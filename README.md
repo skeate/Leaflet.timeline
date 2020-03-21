@@ -17,28 +17,28 @@ some ideas.
 
 ## Examples
 
-To run the examples locally, run `npm start` and then open a browser to
-http://localhost:8112.
+To run the examples locally, run `npm run build` and then open the one of the
+examples in `docs/examples`.
 
-### [Earthquakes][1]
+### [Earthquakes][earthquakes]
 
-USGS provides [GeoJSON(P) files][2] with earthquake data, including time and
+USGS provides [GeoJSON(P) files][usgs] with earthquake data, including time and
 magnitude. For this example, that data is read, parsed to the right format
 (`start` and `end` values in the GeoJSON `properties`), and added to a
 `Leaflet.timeline`.
 
-### [Country borders after WWII][3]
+### [Country borders after WWII][borders]
 
-I found some historical country border data [here][4], though unfortunately
-it was not in GeoJSON. I converted it with [ogr2ogr][5]:
+I found some historical country border data [here][border-data], though
+unfortunately it was not in GeoJSON. I converted it with [ogr2ogr][]:
 
     $ ogr2ogr -f "GeoJSON" \
       -select CNTRY_NAME,COWSYEAR,COWSMONTH,COWSDAY,COWEYEAR,COWEMONTH,COWEDAY \
       borders.json cshapes.shp
 
-then wrangled the data into the right format (examples/borders-parse.js). After
-that, it was just a matter of passing the data to `Leaflet.timeline` and letting
-it handle everything.
+then wrangled the data into the right format (docs/examples/borders-parse.js).
+After that, it was just a matter of passing the data to `Leaflet.timeline` and
+letting it handle everything.
 
 ## Usage
 
@@ -260,8 +260,8 @@ of the intent of the changes.
 [Leaflet Realtime]: https://github.com/perliedman/leaflet-realtime
 [LeafletPlayback]: https://github.com/hallahan/LeafletPlayback
 [Diesal]: https://skeate.github.io/diesal
-[1]: https://skeate.github.io/Leaflet.timeline/earthquakes.html
-[2]: https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-[3]: https://skeate.github.io/Leaflet.timeline/borders.html
-[4]: http://nils.weidmann.ws/projects/cshapes
-[5]: https://www.gdal.org/ogr2ogr.html
+[earthquakes]: ./examples/earthquakes.html
+[usgs]: https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+[borders]: ./examples/borders.html
+[border-data]: http://nils.weidmann.ws/projects/cshapes
+[ogr2ogr]: https://www.gdal.org/ogr2ogr.html

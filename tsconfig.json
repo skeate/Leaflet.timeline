@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "amd",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "outFile": "dist/index.js",
+    "rootDir": "src",
+    "outDir": "dist",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true,
@@ -11,6 +12,11 @@
     "lib": ["DOM", "ES6", "DOM.Iterable"]
   },
   "exclude": [
-    "./dist"
-  ]
+    "./dist",
+    "./test"
+  ],
+  "typedocOptions": {
+    "disableOutputCheck": true,
+    "exclude": "**/*_test.ts"
+  }
 }
