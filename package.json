@@ -59,5 +59,8 @@
     "testMatch": [
       "**/test/*_test.ts"
     ]
-  }
+  },
+  "files": [
+    "dist/*"
+  ]
 }
