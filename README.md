@@ -6,8 +6,7 @@
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Leaflet.timeline 1.2.1
-
+# Leaflet.timeline 1.3.0
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -163,6 +162,11 @@ Wait until the user is finished changing the date to update the map. By default,
 both the map and the date update for every change. With complex data, this can
 slow things down, so set this to true to only update the displayed date.
 
+#### `autoPlay`
+*default: false*
+
+Slider starts playing automatically after loading.
+
 ## Methods
 
 #### `setTime`
@@ -201,6 +205,10 @@ Please create a pull request from your fork of the project, and provide details
 of the intent of the changes.
 
 ## Change log
+
+### 1.3.0
+- Add aria-labels (#136)
+- Add autoplay option (#116)
 
 ### 1.0.0
 - 100% test coverage
