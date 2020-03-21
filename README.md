@@ -184,7 +184,7 @@ within the project folder:
 
 ```
 npm install
-npm test --watch
+npm test -- --watchAll
 ```
 
 To view the examples, you'll need to build:
