@@ -115,6 +115,7 @@ declare module "leaflet" {
     _disableMapDragging(this: TSC): void;
     _enableMapDragging(this: TSC): void;
     _resetIfTimelinesChanged(this: TSC, oldTimelineCount: number): void;
+    _autoPlay(this: TSC): void;
 
     play(this: TSC, fromSynced?: boolean): void;
     pause(this: TSC, fromSynced?: boolean): void;
@@ -127,7 +128,7 @@ declare module "leaflet" {
     syncControl(this: TSC, controlToSync: TSC): void;
   }
 
-  let timelineSliderControl: (options: TimelineSliderControlOptions) => TSC;
+  let timelineSliderControl: (options?: TimelineSliderControlOptions) => TSC;
 }
 
 // @ts-ignore
@@ -147,12 +148,8 @@ L.TimelineSliderControl = L.Control.extend({
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
     L.Util.setOptions(this, options);
-    if (typeof options.start !== "undefined") {
-      this.start = options.start;
-    }
-    if (typeof options.end !== "undefined") {
-      this.end = options.end;
-    }
+    this.start = options.start || 0;
+    this.end = options.end || 0;
   },
 
   /* INTERNAL API *************************************************************/
@@ -283,6 +280,9 @@ L.TimelineSliderControl = L.Control.extend({
     this._makeSlider(container);
     if (this.options.showTicks) {
       this._buildDataList(container);
+    }
+    if (this.options.autoPlay) {
+      this._autoPlay();
     }
   },
 
@@ -472,6 +472,14 @@ L.TimelineSliderControl = L.Control.extend({
     }
   },
 
+  _autoPlay() {
+    if (document.readyState === "loading") {
+      window.addEventListener("load", () => this._autoPlay());
+    } else {
+      this.play();
+    }
+  },
+
   /* EXTERNAL API *************************************************************/
 
   /**
@@ -639,5 +647,5 @@ L.TimelineSliderControl = L.Control.extend({
   }
 });
 
-L.timelineSliderControl = (options: TimelineSliderControlOptions) =>
+L.timelineSliderControl = (options?: TimelineSliderControlOptions) =>
   new L.TimelineSliderControl(options);

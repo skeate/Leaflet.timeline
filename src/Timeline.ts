@@ -4,7 +4,10 @@ import L = require("leaflet");
 
 export type TimedGeoJSON = GenericGeoJSONFeatureCollection<
   GeoJSON.Geometry,
-  { start: string; end: string }
+  {
+    start: string | number;
+    end: string | number;
+  }
 >;
 
 export interface TimelineOptions extends L.GeoJSONOptions {
@@ -25,6 +28,9 @@ export interface TimelineOptions extends L.GeoJSONOptions {
    * feature object.
    */
   getInterval?(feature: GeoJSON.Feature): TimeBounds | false;
+
+  start?: number;
+  end?: number;
 }
 
 export interface TimeBounds {
@@ -41,15 +47,21 @@ declare module "leaflet" {
     ranges: IntervalTree<GeoJSON.Feature>;
     options: Required<TimelineOptions>;
 
-    initialize(geojson: TimedGeoJSON, options?: TimelineOptions): void;
+    initialize(
+      geojson: TimedGeoJSON | GeoJSON.FeatureCollection,
+      options?: TimelineOptions
+    ): void;
     _getInterval(feature: GeoJSON.Feature): TimeBounds | false;
-    _process(geojson: TimedGeoJSON): void;
+    _process(geojson: TimedGeoJSON | GeoJSON.FeatureCollection): void;
     updateDisplayedLayers(): void;
     getLayers(): L.GeoJSON[];
     setTime(time: number | string): void;
   }
 
-  let timeline: (geojson: TimedGeoJSON, options: TimelineOptions) => L.Timeline;
+  let timeline: (
+    geojson?: TimedGeoJSON | GeoJSON.FeatureCollection,
+    options?: TimelineOptions
+  ) => L.Timeline;
 }
 
 // @ts-ignore
@@ -59,7 +71,7 @@ L.Timeline = L.GeoJSON.extend({
 
   initialize(
     this: L.Timeline,
-    geojson: TimedGeoJSON,
+    geojson: TimedGeoJSON | GeoJSON.FeatureCollection,
     options: TimelineOptions = {}
   ): void {
     this.times = [];
@@ -100,7 +112,10 @@ L.Timeline = L.GeoJSON.extend({
    *
    * @param data GeoJSON to process
    */
-  _process(this: L.Timeline, data: TimedGeoJSON): void {
+  _process(
+    this: L.Timeline,
+    data: TimedGeoJSON | GeoJSON.FeatureCollection
+  ): void {
     // In case we don't have a manually set start or end time, we need to find
     // the extremes in the data. We can do that while we're inserting everything
     // into the interval tree.
@@ -117,8 +132,8 @@ L.Timeline = L.GeoJSON.extend({
       start = Math.min(start, interval.start);
       end = Math.max(end, interval.end);
     });
-    this.start = start;
-    this.end = end;
+    this.start = this.options.start || start;
+    this.end = this.options.end || end;
     this.time = this.start;
     if (this.times.length === 0) {
       return;
@@ -191,5 +206,7 @@ L.Timeline = L.GeoJSON.extend({
   }
 });
 
-L.timeline = (geojson: TimedGeoJSON, options: TimelineOptions) =>
-  new L.Timeline(geojson, options);
+L.timeline = (
+  geojson?: TimedGeoJSON | GeoJSON.FeatureCollection,
+  options?: TimelineOptions
+) => new L.Timeline(geojson, options);
