@@ -6,7 +6,7 @@
 
 [![Join the chat at https://gitter.im/skeate/Leaflet.timeline](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/skeate/Leaflet.timeline?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Leaflet.timeline 1.3.0
+# Leaflet.timeline
 
 Show any changing geospatial data over time, from points to polygons.
 
@@ -193,18 +193,16 @@ To view the examples, you'll need to build:
 npm run build
 ```
 
-Then open up the HTML files in the "examples" folders in your browser.
-
-~~The page will reload whenever file changes are made, so you can use the examples
-to test the changes you want to contribute to the project.~~
-
-Eventually the examples will be handily self-updating and such again soon, once
-I get a handle on webpack-dev-server.
+Then open up the HTML files in the "docs/examples" folders in your browser.
 
 Please create a pull request from your fork of the project, and provide details
 of the intent of the changes.
 
 ## Change log
+
+### 1.4.0
+- Migrate to Typescript
+- Upgrade [Diesal][] dependency to improve performance on large datasets
 
 ### 1.3.0
 - Add aria-labels (#136)
@@ -262,8 +260,9 @@ of the intent of the changes.
 
 [Leaflet Realtime]: https://github.com/perliedman/leaflet-realtime
 [LeafletPlayback]: https://github.com/hallahan/LeafletPlayback
-[1]: http://skeate.github.io/Leaflet.timeline/earthquakes.html
-[2]: http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-[3]: http://skeate.github.io/Leaflet.timeline/borders.html
+[Diesal]: https://skeate.github.io/diesal
+[1]: https://skeate.github.io/Leaflet.timeline/earthquakes.html
+[2]: https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+[3]: https://skeate.github.io/Leaflet.timeline/borders.html
 [4]: http://nils.weidmann.ws/projects/cshapes
-[5]: http://www.gdal.org/ogr2ogr.html
+[5]: https://www.gdal.org/ogr2ogr.html
