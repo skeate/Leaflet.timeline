@@ -199,6 +199,13 @@ of the intent of the changes.
 
 ## Change log
 
+### 1.4.2
+- Bugfix: Prevent keyboard controls from triggering in other inputs or textareas
+    (#146)
+
+### 1.4.1
+- Minor package change (removing extra files)
+
 ### 1.4.0
 - Migrate to Typescript
 - Upgrade [Diesal][] dependency to improve performance on large datasets
