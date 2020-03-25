@@ -468,20 +468,23 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   _onKeydown(e) {
-    switch (e.keyCode || e.which) {
-      case 37:
-        this.prev();
-        break;
-      case 39:
-        this.next();
-        break;
-      case 32:
-        this.toggle();
-        break;
-      default:
-        return;
+    let target = (e.target || e.srcElement) as HTMLElement;
+    if ( !/INPUT|TEXTAREA/.test(target.tagName) ) {
+      switch (e.keyCode || e.which) {
+        case 37:
+          this.prev();
+          break;
+        case 39:
+          this.next();
+          break;
+        case 32:
+          this.toggle();
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
     }
-    e.preventDefault();
   },
 
   _sliderChanged(e) {
