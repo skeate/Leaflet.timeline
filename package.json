@@ -3,7 +3,7 @@
   "version": "1.4.2",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
-    "prebuild": "[ -d dist ] && rm -rf dist",
+    "prebuild": "if [ -d dist ]; then rm -rf dist; fi",
     "build": "tsc && webpack",
     "postbuild": "cp dist/leaflet.timeline.js docs/examples/leaflet.timeline.js",
     "test": "jest",
