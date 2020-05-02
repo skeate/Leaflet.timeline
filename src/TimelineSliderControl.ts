@@ -440,19 +440,24 @@ L.TimelineSliderControl = L.Control.extend({
     // register events using leaflet for easy removal
     L.DomEvent.on(
       this._timeSlider,
+      "mousedown mouseup click touchstart",
+      L.DomEvent.stopPropagation
+    );
+    L.DomEvent.on(
+      this._timeSlider,
       "change input",
       this._sliderChanged as any,
       this
     );
     L.DomEvent.on(
       this._timeSlider,
-      "pointerdown mousedown touchstart",
+      "mouseenter",
       this._disableMapDragging,
       this
     );
     L.DomEvent.on(
-      document.body,
-      "pointerup mouseup touchend",
+      this._timeSlider,
+      "mouseleave",
       this._enableMapDragging,
       this
     );
