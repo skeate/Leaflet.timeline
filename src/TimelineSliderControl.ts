@@ -168,12 +168,12 @@ L.TimelineSliderControl = L.Control.extend({
       duration: 10000,
       enableKeyboardControls: false,
       enablePlayback: true,
-      formatOutput: output => `${output || ""}`,
+      formatOutput: (output) => `${output || ""}`,
       showTicks: true,
       waitToUpdateMap: false,
       position: "bottomleft",
       steps: 1000,
-      autoPlay: false
+      autoPlay: false,
     };
     this.timelines = [];
     L.Util.setOptions(this, defaultOptions);
@@ -190,9 +190,9 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _getTimes() {
     const times: number[] = [];
-    this.timelines.forEach(timeline => {
+    this.timelines.forEach((timeline) => {
       const timesInRange = timeline.times.filter(
-        time => time >= this.start && time <= this.end
+        (time) => time >= this.start && time <= this.end
       );
       times.push(...timesInRange);
     });
@@ -222,7 +222,7 @@ L.TimelineSliderControl = L.Control.extend({
     const duration = this.options.duration;
     let min = Infinity;
     let max = -Infinity;
-    this.timelines.forEach(timeline => {
+    this.timelines.forEach((timeline) => {
       if (timeline.start < min) {
         min = timeline.start;
       }
@@ -286,7 +286,7 @@ L.TimelineSliderControl = L.Control.extend({
     const classes = [
       "leaflet-control-layers",
       "leaflet-control-layers-expanded",
-      "leaflet-timeline-control"
+      "leaflet-timeline-control",
     ];
     const container = L.DomUtil.create("div", classes.join(" "));
     this.container = container;
@@ -364,7 +364,7 @@ L.TimelineSliderControl = L.Control.extend({
     }
     const datalistSelect = L.DomUtil.create("select", "", this._datalist);
     datalistSelect.setAttribute("aria-label", "List of times");
-    this._getTimes().forEach(time => {
+    this._getTimes().forEach((time) => {
       (L.DomUtil.create(
         "option",
         "",
@@ -474,7 +474,7 @@ L.TimelineSliderControl = L.Control.extend({
 
   _onKeydown(e) {
     let target = (e.target || e.srcElement) as HTMLElement;
-    if ( !/INPUT|TEXTAREA/.test(target.tagName) ) {
+    if (!/INPUT|TEXTAREA/.test(target.tagName)) {
       switch (e.keyCode || e.which) {
         case 37:
           this.prev();
@@ -496,7 +496,7 @@ L.TimelineSliderControl = L.Control.extend({
     const time = parseFloat(e.target.value);
     this.time = time;
     if (!this.options.waitToUpdateMap || e.type === "change") {
-      this.timelines.forEach(timeline => timeline.setTime(time));
+      this.timelines.forEach((timeline) => timeline.setTime(time));
     }
     if (this._output) {
       this._output.innerHTML = this.options.formatOutput(time);
@@ -533,7 +533,7 @@ L.TimelineSliderControl = L.Control.extend({
   addTimelines(...timelines) {
     this.pause();
     const timelineCount = this.timelines.length;
-    timelines.forEach(timeline => {
+    timelines.forEach((timeline) => {
       if (this.timelines.indexOf(timeline) === -1) {
         this.timelines.push(timeline);
       }
@@ -551,7 +551,7 @@ L.TimelineSliderControl = L.Control.extend({
   removeTimelines(...timelines) {
     this.pause();
     const timelineCount = this.timelines.length;
-    timelines.forEach(timeline => {
+    timelines.forEach((timeline) => {
       const index = this.timelines.indexOf(timeline);
       if (index !== -1) {
         this.timelines.splice(index, 1);
@@ -590,7 +590,7 @@ L.TimelineSliderControl = L.Control.extend({
     this.container?.classList.remove("playing");
 
     if (this.syncedControl && !fromSynced) {
-      this.syncedControl.map(function(control) {
+      this.syncedControl.map(function (control) {
         control.pause(true);
       });
     }
@@ -621,7 +621,7 @@ L.TimelineSliderControl = L.Control.extend({
     }
 
     if (this.syncedControl && !fromSynced) {
-      this.syncedControl.map(function(control) {
+      this.syncedControl.map(function (control) {
         control.play(true);
       });
     }
@@ -646,7 +646,7 @@ L.TimelineSliderControl = L.Control.extend({
     if (this._timeSlider) this._timeSlider.value = time.toString();
     this._sliderChanged({
       type: "change",
-      target: { value: time.toString() }
+      target: { value: time.toString() },
     });
   },
 
@@ -685,7 +685,7 @@ L.TimelineSliderControl = L.Control.extend({
       this.syncedControl = [];
     }
     this.syncedControl.push(controlToSync);
-  }
+  },
 });
 
 L.timelineSliderControl = (options?: TimelineSliderControlOptions) =>
