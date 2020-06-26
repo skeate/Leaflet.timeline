@@ -7,7 +7,8 @@
     "build": "tsc && webpack",
     "postbuild": "cp dist/leaflet.timeline.js docs/examples/leaflet.timeline.js",
     "test": "jest",
-    "prepublishOnly": "npm run build"
+    "update-docs": "typedoc && touch ./docs/.nojekyll",
+    "prepublishOnly": "npm run build && npm run update-docs"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,23 +30,23 @@
   },
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
-    "@types/jest": "^25.1.4",
+    "@types/jest": "^26.0.3",
     "@types/leaflet": "^1.5.11",
     "@types/simulant": "^0.2.0",
     "@yaga/generic-geojson": "^1.0.0",
-    "css-loader": "^3.4.2",
-    "eslint": "^4.10.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "jest": "^25.1.0",
+    "css-loader": "^3.6.0",
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "jest": "^26.1.0",
     "leaflet": "^1.6.0",
     "simulant": "^0.2.2",
-    "style-loader": "^1.1.3",
-    "ts-jest": "^25.2.1",
-    "ts-loader": "^6.2.1",
-    "typedoc": "^0.17.1",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11"
+    "style-loader": "^1.2.1",
+    "ts-jest": "^26.1.1",
+    "ts-loader": "^7.0.5",
+    "typedoc": "^0.17.7",
+    "typescript": "^3.9.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
   "peerDependencies": {
     "leaflet": "^1.2.0"

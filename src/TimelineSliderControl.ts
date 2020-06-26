@@ -79,7 +79,7 @@ type TSC = L.TimelineSliderControl;
 
 declare module "leaflet" {
   export class TimelineSliderControl extends L.Control {
-    container?: HTMLElement;
+    container: HTMLElement;
     options: Required<TimelineSliderControlOptions>;
     timelines: L.Timeline[];
     start: number;
@@ -134,10 +134,9 @@ declare module "leaflet" {
     /** @ignore */
     _onKeydown(this: TSC, ev: KeyboardEvent): void;
     /** @ignore */
-    _sliderChanged(
-      this: TSC,
-      e: { type: string; target: { value: string } }
-    ): void;
+    _sliderChanged(this: TSC, e: Event): void;
+    /** @ignore */
+    _setTime(this: TSC, time: number, type: string): void;
     /** @ignore */
     _disableMapDragging(this: TSC): void;
     /** @ignore */
@@ -443,12 +442,7 @@ L.TimelineSliderControl = L.Control.extend({
       "mousedown mouseup click touchstart",
       L.DomEvent.stopPropagation
     );
-    L.DomEvent.on(
-      this._timeSlider,
-      "change input",
-      this._sliderChanged as any,
-      this
-    );
+    L.DomEvent.on(this._timeSlider, "change input", this._sliderChanged, this);
     L.DomEvent.on(
       this._timeSlider,
       "mouseenter",
@@ -493,9 +487,16 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   _sliderChanged(e) {
-    const time = parseFloat(e.target.value);
+    const { target } = e;
+    const time = parseFloat(
+      target instanceof HTMLInputElement ? target.value : "0"
+    );
+    this._setTime(time, e.type);
+  },
+
+  _setTime(time: number, type: string) {
     this.time = time;
-    if (!this.options.waitToUpdateMap || e.type === "change") {
+    if (!this.options.waitToUpdateMap || type === "change") {
       this.timelines.forEach((timeline) => timeline.setTime(time));
     }
     if (this._output) {
@@ -644,10 +645,7 @@ L.TimelineSliderControl = L.Control.extend({
    */
   setTime(time: number) {
     if (this._timeSlider) this._timeSlider.value = time.toString();
-    this._sliderChanged({
-      type: "change",
-      target: { value: time.toString() },
-    });
+    this._setTime(time, "change");
   },
 
   onAdd(map: L.Map): HTMLElement {
