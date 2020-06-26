@@ -1,18 +1,22 @@
 <html>
   <head>
     <title>Leaflet.timeline</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src="./leaflet.timeline.js"></script>
 
     <style>
-      @import url(http://fonts.googleapis.com/css?family=Open+Sans); 
-      html, body{
+      @import url(https://fonts.googleapis.com/css?family=Open + Sans);
+      html,
+      body {
         margin: 0;
         padding: 0;
         font-family: "Open Sans", sans-serif;
       }
-      #info{
+      #info {
         position: fixed;
         top: 0;
         left: 0;
@@ -20,17 +24,17 @@
         width: 20vw;
         padding: 1em;
       }
-      #map{
+      #map {
         position: fixed;
         top: 0;
         left: 20vw;
         bottom: 0;
         right: 0;
       }
-      .leaflet-bottom.leaflet-left{
+      .leaflet-bottom.leaflet-left {
         width: 100%;
       }
-      .leaflet-control-container .leaflet-timeline-controls{
+      .leaflet-control-container .leaflet-timeline-controls {
         box-sizing: border-box;
         width: 100%;
         margin: 0;
@@ -48,74 +52,81 @@
     <div id="map"></div>
 
     <script>
-      var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      var osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">' +
-        'OpenStreetMap</a> contributors';
+      var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+      var osmAttrib =
+        '&copy; <a href="https://openstreetmap.org/copyright">' +
+        "OpenStreetMap</a> contributors";
       var osm = L.tileLayer(osmUrl, {
         maxZoom: 18,
         attribution: osmAttrib,
-        noWrap: true
+        noWrap: true,
       });
-      var map = L.map('map', {
+      var map = L.map("map", {
         layers: [osm],
-        center: new L.LatLng(0,0),
+        center: new L.LatLng(0, 0),
         zoom: 3,
-        maxBounds: [[90,-180], [-90, 180]]
+        maxBounds: [
+          [90, -180],
+          [-90, 180],
+        ],
       });
 
       // this is just used to show the currently-displayed earthquakes
       // in the little sidebar. meant as an example of a use for the 'change'
       // event
-      function updateList(timeline){
+      function updateList(timeline) {
         var displayed = timeline.getLayers();
-        var list = document.getElementById('displayed-list');
+        var list = document.getElementById("displayed-list");
         list.innerHTML = "";
-        displayed.forEach(function(quake){
-          var li = document.createElement('li');
+        displayed.forEach(function (quake) {
+          var li = document.createElement("li");
           li.innerHTML = quake.feature.properties.title;
           list.appendChild(li);
         });
       }
 
       // eqfeed_callback is called once the earthquake geojsonp file below loads
-      function eqfeed_callback(data){
-        var getInterval = function(quake) {
+      function eqfeed_callback(data) {
+        var getInterval = function (quake) {
           // earthquake data only has a time, so we'll use that as a "start"
           // and the "end" will be that + some value based on magnitude
           // 18000000 = 30 minutes, so a quake of magnitude 5 would show on the
           // map for 150 minutes or 2.5 hours
           return {
             start: quake.properties.time,
-            end:   quake.properties.time + quake.properties.mag * 1800000
+            end: quake.properties.time + quake.properties.mag * 1800000,
           };
         };
         var timelineControl = L.timelineSliderControl({
-          formatOutput: function(date) {
+          formatOutput: function (date) {
             return new Date(date).toString();
-          }
+          },
         });
         var timeline = L.timeline(data, {
           getInterval: getInterval,
-          pointToLayer: function(data, latlng){
+          pointToLayer: function (data, latlng) {
             var hue_min = 120;
             var hue_max = 0;
-            var hue = data.properties.mag / 10 * (hue_max - hue_min) + hue_min;
+            var hue =
+              (data.properties.mag / 10) * (hue_max - hue_min) + hue_min;
             return L.circleMarker(latlng, {
               radius: data.properties.mag * 3,
-              color: "hsl("+hue+", 100%, 50%)",
-              fillColor: "hsl("+hue+", 100%, 50%)"
-            }).bindPopup('<a href="'+data.properties.url+'">click for more info</a>');
-          }
+              color: "hsl(" + hue + ", 100%, 50%)",
+              fillColor: "hsl(" + hue + ", 100%, 50%)",
+            }).bindPopup(
+              '<a href="' + data.properties.url + '">click for more info</a>'
+            );
+          },
         });
         timelineControl.addTo(map);
         timelineControl.addTimelines(timeline);
         timeline.addTo(map);
-        timeline.on('change', function(e){
+        timeline.on("change", function (e) {
           updateList(e.target);
         });
         updateList(timeline);
       }
     </script>
-    <script src="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>
+    <script src="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojsonp"></script>
   </body>
 </html>
