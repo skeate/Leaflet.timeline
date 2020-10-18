@@ -103,6 +103,7 @@ describe("Timeline", () => {
     const layer = L.timeline(geojson);
     expect(layer.start).toEqual(0);
     expect(layer.end).toEqual(1420106400000);
+    expect(layer.times).toStrictEqual([0, 473421600000, 946720800000, 1420106400000]);
   });
 
   it("should handle a lack of time data", () => {

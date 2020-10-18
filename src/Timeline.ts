@@ -133,11 +133,6 @@ L.Timeline = L.GeoJSON.extend({
     this: L.Timeline,
     data: TimedGeoJSON | GeoJSON.FeatureCollection
   ): void {
-    // In case we don't have a manually set start or end time, we need to find
-    // the extremes in the data. We can do that while we're inserting everything
-    // into the interval tree.
-    let start = Infinity;
-    let end = -Infinity;
     data.features.forEach(feature => {
       const interval = this._getInterval(feature);
       if (!interval) {
@@ -150,13 +145,11 @@ L.Timeline = L.GeoJSON.extend({
       );
       this.times.push(interval.start);
       this.times.push(interval.end);
-      start = Math.min(start, interval.start);
-      end = Math.max(end, interval.end);
     });
-    this.start = this.options.start || start;
-    this.end = this.options.end || end;
-    this.time = this.start;
     if (this.times.length === 0) {
+      this.start = this.options.start ?? Infinity;
+      this.end = this.options.end ?? -Infinity;
+      this.time = this.start;
       return;
     }
     // default sort is lexicographic, even for number types. so need to
@@ -176,6 +169,9 @@ L.Timeline = L.GeoJSON.extend({
       },
       [this.times[0]]
     );
+    this.start = this.options.start ?? this.times[0];
+    this.end = this.options.end ?? this.times[this.times.length - 1];
+    this.time = this.start;
   },
 
   /**
