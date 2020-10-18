@@ -8,6 +8,8 @@ export type TimedGeoJSON = GenericGeoJSONFeatureCollection<
   {
     start: string | number;
     end: string | number;
+    startExclusive?: string | boolean;
+    endExclusive?: string | boolean;
   }
 >;
 
@@ -37,6 +39,14 @@ export interface TimelineOptions extends L.GeoJSONOptions {
 export interface TimeBounds {
   start: number;
   end: number;
+  /**
+   * Consider the `start` bound to exclusive, i.e., only matching `time > start` (instead of `time >= start`)
+   */
+  startExclusive?: boolean;
+  /**
+   * Consider the `end` bound to exclusive, i.e., only matching `time < end` (instead of `time <= end`)
+   */
+  endExclusive?: boolean;
 }
 
 declare module "leaflet" {
@@ -102,9 +112,12 @@ L.Timeline = L.GeoJSON.extend({
       "start" in feature.properties &&
       "end" in feature.properties
     ) {
+      const {startExclusive, endExclusive} = feature.properties;
       return {
         start: new Date(feature.properties.start).getTime(),
-        end: new Date(feature.properties.end).getTime()
+        end: new Date(feature.properties.end).getTime(),
+        startExclusive: startExclusive === true || startExclusive === "true",
+        endExclusive: endExclusive === true || endExclusive === "true",
       };
     }
     return false;
@@ -130,7 +143,11 @@ L.Timeline = L.GeoJSON.extend({
       if (!interval) {
         return;
       }
-      this.ranges.insert(interval.start, interval.end, feature);
+      this.ranges.insert(
+        interval.start + (interval.startExclusive ? 1 : 0),
+        interval.end - (interval.endExclusive ? 1 : 0),
+        feature
+      );
       this.times.push(interval.start);
       this.times.push(interval.end);
       start = Math.min(start, interval.start);
