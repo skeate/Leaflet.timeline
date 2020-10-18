@@ -165,4 +165,17 @@ describe("Timeline", () => {
     layer.updateDisplayedLayers();
     expect(layer.getLayers()).toHaveLength(1);
   });
+
+  it("should allow the start interval to be considered exclusive", () => {
+    geojson.features.forEach((f) => (f.properties.startExclusive = false));
+    let layer = L.timeline(geojson);
+    layer.setTime(473421600000);
+    expect(layer.getLayers()).toHaveLength(3);
+    geojson.features.forEach((f) => (f.properties.startExclusive = true));
+    layer = L.timeline(geojson);
+    layer.setTime(473421600000);
+    expect(layer.getLayers()).toHaveLength(1);
+    layer.setTime(473421600000 + 1);
+    expect(layer.getLayers()).toHaveLength(3);
+  });
 });

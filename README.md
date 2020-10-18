@@ -81,6 +81,10 @@ see also [all GeoJSON's options](http://leafletjs.com/reference.html#geojson)
 This is a function which should return an object with `start` and `end`
 properties. By default it assumes a structure as above.
 
+Optionally, the boolean keys `startExclusive` and `endExclusive` allow this
+interval to be considered exclusive, i.e., only matching `time > start`
+(`time < end`), instead of `time >= start`(`time <= end`), respectively.
+
 ##### `drawOnSetTime` (Boolean -- optional, default `true`)
 
 Make the layer draw as soon as `setTime` is called. If this is set to false, you
