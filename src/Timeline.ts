@@ -1,9 +1,9 @@
-import { GenericGeoJSONFeatureCollection } from "@yaga/generic-geojson";
+import { type FeatureCollection } from "geojson";
 import { IntervalTree } from "diesal";
 /** @ignore */
 import L = require("leaflet");
 
-export type TimedGeoJSON = GenericGeoJSONFeatureCollection<
+export type TimedGeoJSON = FeatureCollection<
   GeoJSON.Geometry,
   {
     start: string | number;
