@@ -1,6 +1,6 @@
 {
   "name": "leaflet.timeline",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "prebuild": "rm -rf dist",
