@@ -271,8 +271,9 @@ of the intent of the changes.
 [Leaflet Realtime]: https://github.com/perliedman/leaflet-realtime
 [LeafletPlayback]: https://github.com/hallahan/LeafletPlayback
 [Diesal]: https://skeate.github.io/diesal
-[earthquakes]: ./examples/earthquakes.html
+[earthquakes]:
+    https://skeate.dev/Leaflet.timeline/examples/earthquakes.html
 [usgs]: https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-[borders]: ./examples/borders.html
+[borders]: https://skeate.dev/Leaflet.timeline/examples/borders.html
 [border-data]: http://nils.weidmann.ws/projects/cshapes
 [ogr2ogr]: https://www.gdal.org/ogr2ogr.html
