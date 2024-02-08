@@ -1,14 +1,13 @@
 {
   "name": "leaflet.timeline",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "rollup -c",
     "postbuild": "cp dist/leaflet.timeline.js docs/examples/leaflet.timeline.js",
     "test": "jest",
-    "update-docs": "typedoc && touch ./docs/.nojekyll",
-    "prepublishOnly": "npm run build && npm run update-docs"
+    "prepublishOnly": "npm run build"
   },
   "exports": {
     "types": "./dist/index.d.ts",
