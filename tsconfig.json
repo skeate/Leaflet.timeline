@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "rootDir": "src",
+    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDir": ".",
     "outDir": "dist",
     "declaration": true,
     "strict": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["DOM", "ES6", "DOM.Iterable"]
   },
-  "exclude": [
-    "./dist",
-    "./test"
-  ],
+  "exclude": ["./dist", "./test"],
   "typedocOptions": {
     "disableOutputCheck": true,
     "exclude": "**/*_test.ts"

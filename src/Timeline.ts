@@ -1,7 +1,6 @@
-import { type FeatureCollection } from "geojson";
-import { IntervalTree } from "diesal";
-/** @ignore */
-import L = require("leaflet");
+import { type FeatureCollection } from 'geojson';
+import { IntervalTree } from 'diesal';
+import L from 'leaflet';
 
 export type TimedGeoJSON = FeatureCollection<
   GeoJSON.Geometry,
@@ -49,7 +48,7 @@ export interface TimeBounds {
   endExclusive?: boolean;
 }
 
-declare module "leaflet" {
+declare module 'leaflet' {
   export class Timeline extends L.GeoJSON {
     start: number;
     end: number;
@@ -91,7 +90,7 @@ L.Timeline = L.GeoJSON.extend({
     this.times = [];
     this.ranges = new IntervalTree();
     const defaultOptions = {
-      drawOnSetTime: true
+      drawOnSetTime: true,
     };
     // @ts-ignore
     L.GeoJSON.prototype.initialize.call(this, null, options);
@@ -109,15 +108,15 @@ L.Timeline = L.GeoJSON.extend({
   _getInterval(this: L.Timeline, feature: GeoJSON.Feature): TimeBounds | false {
     if (
       feature.properties &&
-      "start" in feature.properties &&
-      "end" in feature.properties
+      'start' in feature.properties &&
+      'end' in feature.properties
     ) {
-      const {startExclusive, endExclusive} = feature.properties;
+      const { startExclusive, endExclusive } = feature.properties;
       return {
         start: new Date(feature.properties.start).getTime(),
         end: new Date(feature.properties.end).getTime(),
-        startExclusive: startExclusive === true || startExclusive === "true",
-        endExclusive: endExclusive === true || endExclusive === "true",
+        startExclusive: startExclusive === true || startExclusive === 'true',
+        endExclusive: endExclusive === true || endExclusive === 'true',
       };
     }
     return false;
@@ -133,7 +132,7 @@ L.Timeline = L.GeoJSON.extend({
     this: L.Timeline,
     data: TimedGeoJSON | GeoJSON.FeatureCollection
   ): void {
-    data.features.forEach(feature => {
+    data.features.forEach((feature) => {
       const interval = this._getInterval(feature);
       if (!interval) {
         return;
@@ -182,11 +181,11 @@ L.Timeline = L.GeoJSON.extend({
    * and it will be processed into a number automatically.
    */
   setTime(this: L.Timeline, time: number | string): void {
-    this.time = typeof time === "number" ? time : new Date(time).getTime();
+    this.time = typeof time === 'number' ? time : new Date(time).getTime();
     if (this.options.drawOnSetTime) {
       this.updateDisplayedLayers();
     }
-    this.fire("change");
+    this.fire('change');
   },
 
   /**
@@ -204,7 +203,7 @@ L.Timeline = L.GeoJSON.extend({
     // we find a match, then we remove it from the feature list. If we don't
     // find a match, then the displayed layer is no longer valid at this time.
     // We should remove it.
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
       let found = false;
       for (let j = 0; j < features.length; j++) {
         if (layer.feature === features[j]) {
@@ -217,10 +216,10 @@ L.Timeline = L.GeoJSON.extend({
         layersToRemove.push(layer);
       }
     });
-    layersToRemove.forEach(layer => this.removeLayer(layer));
+    layersToRemove.forEach((layer) => this.removeLayer(layer));
     // Finally, with any features left, they must be new data! We can add them.
-    features.forEach(feature => this.addData(feature));
-  }
+    features.forEach((feature) => this.addData(feature));
+  },
 });
 
 L.timeline = (

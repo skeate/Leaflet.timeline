@@ -1,5 +1,4 @@
-/** @ignore */
-import L = require("leaflet");
+import L from 'leaflet';
 
 interface TimelineSliderControlOptions extends L.ControlOptions {
   /**
@@ -72,12 +71,12 @@ interface TimelineSliderControlOptions extends L.ControlOptions {
 }
 
 /** @ignore */
-type PlaybackControl = "play" | "pause" | "prev" | "next";
+type PlaybackControl = 'play' | 'pause' | 'prev' | 'next';
 
 /** @ignore */
 type TSC = L.TimelineSliderControl;
 
-declare module "leaflet" {
+declare module 'leaflet' {
   export class TimelineSliderControl extends L.Control {
     container: HTMLElement;
     options: Required<TimelineSliderControlOptions>;
@@ -167,10 +166,10 @@ L.TimelineSliderControl = L.Control.extend({
       duration: 10000,
       enableKeyboardControls: false,
       enablePlayback: true,
-      formatOutput: (output) => `${output || ""}`,
+      formatOutput: (output) => `${output || ''}`,
       showTicks: true,
       waitToUpdateMap: false,
-      position: "bottomleft",
+      position: 'bottomleft',
       steps: 1000,
       autoPlay: false,
     };
@@ -216,8 +215,8 @@ L.TimelineSliderControl = L.Control.extend({
    * @private
    */
   _recalculate() {
-    const manualStart = typeof this.options.start !== "undefined";
-    const manualEnd = typeof this.options.end !== "undefined";
+    const manualStart = typeof this.options.start !== 'undefined';
+    const manualEnd = typeof this.options.end !== 'undefined';
     const duration = this.options.duration;
     let min = Infinity;
     let max = -Infinity;
@@ -283,21 +282,21 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _createDOM() {
     const classes = [
-      "leaflet-control-layers",
-      "leaflet-control-layers-expanded",
-      "leaflet-timeline-control",
+      'leaflet-control-layers',
+      'leaflet-control-layers-expanded',
+      'leaflet-timeline-control',
     ];
-    const container = L.DomUtil.create("div", classes.join(" "));
+    const container = L.DomUtil.create('div', classes.join(' '));
     this.container = container;
     if (this.options.enablePlayback) {
       const sliderCtrlC = L.DomUtil.create(
-        "div",
-        "sldr-ctrl-container",
+        'div',
+        'sldr-ctrl-container',
         container
       );
       const buttonContainer = L.DomUtil.create(
-        "div",
-        "button-container",
+        'div',
+        'button-container',
         sliderCtrlC
       );
       this._makeButtons(buttonContainer);
@@ -322,7 +321,7 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _addKeyListeners(): void {
     this._listener = (ev: KeyboardEvent) => this._onKeydown(ev);
-    document.addEventListener("keydown", this._listener);
+    document.addEventListener('keydown', this._listener);
   },
 
   /**
@@ -331,7 +330,7 @@ L.TimelineSliderControl = L.Control.extend({
    * @private
    */
   _removeKeyListeners(): void {
-    document.removeEventListener("keydown", this._listener);
+    document.removeEventListener('keydown', this._listener);
   },
 
   /**
@@ -342,13 +341,13 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _buildDataList(container): void {
     this._datalist = L.DomUtil.create(
-      "datalist",
-      "",
+      'datalist',
+      '',
       container
     ) as HTMLDataListElement;
     const idNum = Math.floor(Math.random() * 1000000);
     this._datalist.id = `timeline-datalist-${idNum}`;
-    this._timeSlider.setAttribute("list", this._datalist.id);
+    this._timeSlider.setAttribute('list', this._datalist.id);
     this._rebuildDataList();
   },
 
@@ -361,14 +360,12 @@ L.TimelineSliderControl = L.Control.extend({
     while (datalist.firstChild) {
       datalist.removeChild(datalist.firstChild);
     }
-    const datalistSelect = L.DomUtil.create("select", "", this._datalist);
-    datalistSelect.setAttribute("aria-label", "List of times");
+    const datalistSelect = L.DomUtil.create('select', '', this._datalist);
+    datalistSelect.setAttribute('aria-label', 'List of times');
     this._getTimes().forEach((time) => {
-      (L.DomUtil.create(
-        "option",
-        "",
-        datalistSelect
-      ) as HTMLOptionElement).value = time.toString();
+      (
+        L.DomUtil.create('option', '', datalistSelect) as HTMLOptionElement
+      ).value = time.toString();
     });
   },
 
@@ -381,9 +378,9 @@ L.TimelineSliderControl = L.Control.extend({
    * @param name The class to give the button and the function to call
    */
   _makeButton(container, name) {
-    const button = L.DomUtil.create("button", name, container);
-    button.setAttribute("aria-label", name);
-    button.addEventListener("click", () => this[name]());
+    const button = L.DomUtil.create('button', name, container);
+    button.setAttribute('aria-label', name);
+    button.addEventListener('click', () => this[name]());
     L.DomEvent.disableClickPropagation(button);
   },
 
@@ -394,10 +391,10 @@ L.TimelineSliderControl = L.Control.extend({
    * @param container The container to which to add the buttons
    */
   _makeButtons(container) {
-    this._makeButton(container, "prev");
-    this._makeButton(container, "play");
-    this._makeButton(container, "pause");
-    this._makeButton(container, "next");
+    this._makeButton(container, 'prev');
+    this._makeButton(container, 'play');
+    this._makeButton(container, 'pause');
+    this._makeButton(container, 'next');
   },
 
   /**
@@ -426,12 +423,12 @@ L.TimelineSliderControl = L.Control.extend({
    */
   _makeSlider(container) {
     const slider = L.DomUtil.create(
-      "input",
-      "time-slider",
+      'input',
+      'time-slider',
       container
     ) as HTMLInputElement;
-    slider.setAttribute("aria-label", "Slider");
-    slider.type = "range";
+    slider.setAttribute('aria-label', 'Slider');
+    slider.type = 'range';
     slider.min = (this.start || 0).toString();
     slider.max = (this.end || 0).toString();
     slider.value = (this.start || 0).toString();
@@ -439,19 +436,19 @@ L.TimelineSliderControl = L.Control.extend({
     // register events using leaflet for easy removal
     L.DomEvent.on(
       this._timeSlider,
-      "mousedown mouseup click touchstart",
+      'mousedown mouseup click touchstart',
       L.DomEvent.stopPropagation
     );
-    L.DomEvent.on(this._timeSlider, "change input", this._sliderChanged, this);
+    L.DomEvent.on(this._timeSlider, 'change input', this._sliderChanged, this);
     L.DomEvent.on(
       this._timeSlider,
-      "mouseenter",
+      'mouseenter',
       this._disableMapDragging,
       this
     );
     L.DomEvent.on(
       this._timeSlider,
-      "mouseleave",
+      'mouseleave',
       this._enableMapDragging,
       this
     );
@@ -459,8 +456,8 @@ L.TimelineSliderControl = L.Control.extend({
 
   _makeOutput(container) {
     this._output = L.DomUtil.create(
-      "output",
-      "time-text",
+      'output',
+      'time-text',
       container
     ) as HTMLOutputElement;
     this._output.innerHTML = this.options.formatOutput(this.start);
@@ -489,14 +486,14 @@ L.TimelineSliderControl = L.Control.extend({
   _sliderChanged(e) {
     const { target } = e;
     const time = parseFloat(
-      target instanceof HTMLInputElement ? target.value : "0"
+      target instanceof HTMLInputElement ? target.value : '0'
     );
     this._setTime(time, e.type);
   },
 
   _setTime(time: number, type: string) {
     this.time = time;
-    if (!this.options.waitToUpdateMap || type === "change") {
+    if (!this.options.waitToUpdateMap || type === 'change') {
       this.timelines.forEach((timeline) => timeline.setTime(time));
     }
     if (this._output) {
@@ -515,8 +512,8 @@ L.TimelineSliderControl = L.Control.extend({
   },
 
   _autoPlay() {
-    if (document.readyState === "loading") {
-      window.addEventListener("load", () => this._autoPlay());
+    if (document.readyState === 'loading') {
+      window.addEventListener('load', () => this._autoPlay());
     } else {
       this.play();
     }
@@ -588,7 +585,7 @@ L.TimelineSliderControl = L.Control.extend({
   pause(fromSynced) {
     window.clearTimeout(this._timer);
     this._playing = false;
-    this.container?.classList.remove("playing");
+    this.container?.classList.remove('playing');
 
     if (this.syncedControl && !fromSynced) {
       this.syncedControl.map(function (control) {
@@ -611,10 +608,10 @@ L.TimelineSliderControl = L.Control.extend({
     this.setTime(+this._timeSlider.value);
     if (parseFloat(this._timeSlider.value) === this.end) {
       this._playing = false;
-      this.container?.classList.remove("playing");
+      this.container?.classList.remove('playing');
     } else {
       this._playing = true;
-      this.container?.classList.add("playing");
+      this.container?.classList.add('playing');
       this._timer = window.setTimeout(
         () => this.play(true),
         this._stepDuration
@@ -645,7 +642,7 @@ L.TimelineSliderControl = L.Control.extend({
    */
   setTime(time: number) {
     if (this._timeSlider) this._timeSlider.value = time.toString();
-    this._setTime(time, "change");
+    this._setTime(time, 'change');
   },
 
   onAdd(map: L.Map): HTMLElement {
@@ -661,16 +658,16 @@ L.TimelineSliderControl = L.Control.extend({
       this._removeKeyListeners();
     }
     // cleanup events registered in _makeSlider
-    L.DomEvent.off(this._timeSlider, "change input", this._sliderChanged, this);
+    L.DomEvent.off(this._timeSlider, 'change input', this._sliderChanged, this);
     L.DomEvent.off(
       this._timeSlider,
-      "pointerdown mousedown touchstart",
+      'pointerdown mousedown touchstart',
       this._disableMapDragging,
       this
     );
     L.DomEvent.off(
       document.body,
-      "pointerup mouseup touchend",
+      'pointerup mouseup touchend',
       this._enableMapDragging,
       this
     );

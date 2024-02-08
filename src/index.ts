@@ -1,3 +1,3 @@
-import './Timeline.ts';
-import './TimelineSliderControl.ts';
+import './Timeline';
+import './TimelineSliderControl';
 import './leaflet.timeline.css';

@@ -4,14 +4,19 @@
   "description": "Show GeoJSON objects on a timeline",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc && webpack",
+    "build": "rollup -c",
     "postbuild": "cp dist/leaflet.timeline.js docs/examples/leaflet.timeline.js",
     "test": "jest",
     "update-docs": "typedoc && touch ./docs/.nojekyll",
     "prepublishOnly": "npm run build && npm run update-docs"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs",
+    "node": "./dist/index.cjs",
+    "default": "./dist/leaflet.timeline.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/skeate/Leaflet.timeline.git"
@@ -30,18 +35,28 @@
   },
   "homepage": "https://github.com/skeate/Leaflet.timeline",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/geojson": "7946.0.14",
+    "@types/jest": "^29.5.12",
     "@types/leaflet": "^1.5.11",
     "@types/simulant": "^0.2.0",
     "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "leaflet": "^1.6.0",
+    "rollup": "^4.9.6",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-visualizer": "^5.12.0",
     "simulant": "^0.2.2",
     "style-loader": "^3.3.4",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "typedoc": "^0.25.7",
     "typescript": "^5.3.3",
     "webpack": "^5.90.1",
@@ -52,13 +67,6 @@
   },
   "dependencies": {
     "diesal": "^1.0.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "collectCoverage": true,
-    "testMatch": [
-      "**/test/*_test.ts"
-    ]
   },
   "files": [
     "dist/*"
